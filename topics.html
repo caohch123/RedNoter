@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>话题追踪 · 小红笔 AI</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#FFF1F3',
+              100: '#FFE2E7',
+              200: '#FFC7D1',
+              300: '#FF9BAC',
+              400: '#FF6B85',
+              500: '#F44464',
+              600: '#DC2749',
+              700: '#B91C3F'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 40px -24px rgba(15,23,42,0.25)'
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<!-- 顶部导航 -->
+<header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+<div class="mx-auto flex h-16 max-w-[1240px] items-center justify-between gap-4 px-5 sm:px-6">
+<a class="flex shrink-0 items-center gap-2.5" href="home.html">
+<span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/30">
+<iconify-icon icon="solar:pen-new-square-bold" width="20"></iconify-icon>
+</span>
+<span class="flex items-baseline gap-2">
+<span class="text-[17px] font-bold tracking-tight text-slate-900">小红笔 AI</span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">创作台</span>
+</span>
+</a>
+<nav class="hidden items-center gap-1 lg:flex">
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="home.html">首页</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="create.html">AI 创作</a>
+<a class="rounded-lg bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand-600" href="topics.html">话题追踪</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="assets.html">素材库</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="publish.html">发布管理</a>
+</nav>
+<div class="flex shrink-0 items-center gap-2 sm:gap-3">
+<a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="login.html">登录</a>
+<a class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+          开始创作
+          <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+</a>
+</div>
+</div>
+<div class="no-scrollbar flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 lg:hidden">
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="home.html">首页</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="create.html">AI 创作</a>
+<a class="shrink-0 rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-600" href="topics.html">话题追踪</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="assets.html">素材库</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="publish.html">发布管理</a>
+</div>
+</header>
+<main class="mx-auto max-w-[1240px] px-5 pb-16 pt-8 sm:px-6">
+<!-- 页头 -->
+<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-500">Topic Radar</p>
+<h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">话题追踪</h1>
+<p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+          关注话题和竞品账号，热门笔记会持续汇入这里。挑一条结构合适的，直接带进仿写工作台。
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] text-slate-500">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          最后更新 <span id="lastUpdated">今天 09:20</span>
+</span>
+<button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900" onclick="refreshTopics()" type="button">
+<iconify-icon icon="solar:refresh-linear" width="15"></iconify-icon>
+          刷新
+        </button>
+<a class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+<iconify-icon icon="solar:magic-stick-3-bold" width="15"></iconify-icon>
+          去创作
+        </a>
+</div>
+</div>
+<!-- 关注追踪条 -->
+<section class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<div class="flex flex-col gap-3 border-b border-slate-100 px-4 py-3.5 lg:flex-row lg:items-center lg:justify-between">
+<div class="flex items-center gap-2">
+<span class="grid h-7 w-7 place-items-center rounded-lg bg-brand-50 text-brand-600">
+<iconify-icon icon="solar:radar-bold" width="15"></iconify-icon>
+</span>
+<p class="text-sm font-semibold text-slate-800">我的追踪</p>
+<span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500" id="followCount">5 个话题 · 3 个账号</span>
+</div>
+<button class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-brand-200 bg-brand-50 px-3 py-1.5 text-[11px] font-semibold text-brand-600 transition hover:bg-brand-100" onclick="toggleFollowForm()" type="button">
+<iconify-icon icon="solar:add-circle-bold" width="14"></iconify-icon>
+          新增关注
+        </button>
+</div>
+<div class="grid gap-4 px-4 py-4 lg:grid-cols-[1.25fr_1fr]">
+<div>
+<p class="mb-2 text-[11px] font-medium text-slate-400">关注的话题</p>
+<div class="flex flex-wrap gap-2" id="followedTopics">
+<button class="inline-flex items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-[11px] font-medium text-brand-600 transition hover:bg-brand-100" onclick="setTopicFilter(this, '通勤穿搭')" type="button">
+              # 通勤穿搭 <span class="text-[10px] text-brand-400">热度 8.6w</span>
+</button>
+<button class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="setTopicFilter(this, '家居改造')" type="button">
+              # 租房改造 <span class="text-[10px] text-slate-400">热度 5.2w</span>
+</button>
+<button class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="setTopicFilter(this, '护肤成分')" type="button">
+              # 敏感肌护肤 <span class="text-[10px] text-slate-400">热度 3.7w</span>
+</button>
+<button class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="setTopicFilter(this, '一人食')" type="button">
+              # 一人食 <span class="text-[10px] text-slate-400">热度 6.1w</span>
+</button>
+<button class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="setTopicFilter(this, '城市漫游')" type="button">
+              # 城市漫游 <span class="text-[10px] text-slate-400">热度 2.9w</span>
+</button>
+</div>
+<div class="mt-3 hidden rounded-xl border border-dashed border-brand-200 bg-brand-50/50 p-3" id="followForm">
+<div class="flex flex-col gap-2 sm:flex-row">
+<input class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:ring-4 focus:ring-brand-50" id="followInput" placeholder="输入话题或账号名称，例如：通勤包" type="text"/>
+<select class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs text-slate-600 outline-none focus:border-brand-300" id="followType">
+<option value="话题">话题</option>
+<option value="账号">账号</option>
+</select>
+<button class="shrink-0 rounded-lg bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-brand-700" onclick="addFollow()" type="button">确认关注</button>
+</div>
+<p class="mt-2 text-[10px] text-slate-400">原型内新增关注仅作演示，不会真实抓取平台数据。</p>
+</div>
+</div>
+<div class="lg:border-l lg:border-slate-100 lg:pl-4">
+<div class="flex items-center justify-between">
+<p class="text-[11px] font-medium text-slate-400">关注的竞品账号</p>
+<span class="text-[10px] text-slate-400">近 7 天涨粉</span>
+</div>
+<div class="mt-2 space-y-2" id="followedAccounts">
+<div class="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 px-2.5 py-2">
+<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-rose-200 to-brand-300 text-[11px] font-bold text-white">小满</span>
+<div class="min-w-0 flex-1">
+<p class="truncate text-[11px] font-semibold text-slate-700">打工人小满</p>
+<p class="text-[10px] text-slate-400">通勤穿搭 · 每周 3 更</p>
+</div>
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">+2,140</span>
+</div>
+<div class="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 px-2.5 py-2">
+<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-sky-200 to-sky-400 text-[11px] font-bold text-white">改造</span>
+<div class="min-w-0 flex-1">
+<p class="truncate text-[11px] font-semibold text-slate-700">小户型改造日记</p>
+<p class="text-[10px] text-slate-400">家居改造 · 长图文为主</p>
+</div>
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">+1,580</span>
+</div>
+<div class="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 px-2.5 py-2">
+<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-amber-200 to-orange-400 text-[11px] font-bold text-white">带饭</span>
+<div class="min-w-0 flex-1">
+<p class="truncate text-[11px] font-semibold text-slate-700">带饭不将就</p>
+<p class="text-[10px] text-slate-400">一人食 · 高频互动</p>
+</div>
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">+960</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 筛选栏 -->
+<section class="mt-5 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+<div class="no-scrollbar flex gap-1.5 overflow-x-auto" id="quickFilterBar">
+<button class="shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white transition" data-filter="全部" onclick="setTopicFilter(this, '全部')" type="button">全部</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="通勤穿搭" onclick="setTopicFilter(this, '通勤穿搭')" type="button">通勤穿搭</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="家居改造" onclick="setTopicFilter(this, '家居改造')" type="button">家居改造</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="平价好物" onclick="setTopicFilter(this, '平价好物')" type="button">平价好物</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="护肤成分" onclick="setTopicFilter(this, '护肤成分')" type="button">护肤成分</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="一人食" onclick="setTopicFilter(this, '一人食')" type="button">一人食</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="桌面好物" onclick="setTopicFilter(this, '桌面好物')" type="button">桌面好物</button>
+<button class="shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" data-filter="城市漫游" onclick="setTopicFilter(this, '城市漫游')" type="button">城市漫游</button>
+</div>
+<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+<div class="relative">
+<iconify-icon class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" icon="solar:magnifer-linear" width="15"></iconify-icon>
+<input class="w-full rounded-lg border border-slate-200 bg-slate-50/70 py-2 pl-8 pr-3 text-[11px] text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50 sm:w-56" id="topicSearch" oninput="applyFilters()" placeholder="搜索标题、账号或标签" type="text"/>
+</div>
+<select class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-[11px] text-slate-600 outline-none transition focus:border-brand-300" id="sortSelect" onchange="sortCards()">
+<option value="new">按更新时间</option>
+<option value="save">按收藏最多</option>
+<option value="heat">按点赞最多</option>
+</select>
+</div>
+</div>
+</section>
+<!-- 结果信息 -->
+<div class="mt-5 flex flex-wrap items-center justify-between gap-2">
+<p class="text-xs text-slate-500">已为你汇总 <span class="font-semibold text-slate-800" id="visibleCount">9</span> 条热门内容</p>
+<div class="flex items-center gap-3 text-[10px] text-slate-400">
+<span class="inline-flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>近 24 小时增长明显</span>
+<span>数据为原型演示</span>
+</div>
+</div>
+<!-- 热门内容列表 -->
+<section class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3" id="topicGrid">
+<article class="topic-card" data-heat="18000" data-momentum="126" data-new="1" data-save="9240" data-topics="通勤穿搭">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600"># 通勤穿搭</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +126%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">通勤包里到底该装什么？我的一周实测</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">把每天的装载内容记下来后，我才发现分区比容量更重要。附一周清单。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#通勤好物</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#打工人日常</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#一包多背</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-rose-200 to-brand-300 text-[9px] font-bold text-white">满</span>
+<span class="text-[11px] font-medium text-slate-600">打工人小满</span>
+<span class="ml-auto text-[10px] text-slate-400">2 小时前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>1.8w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>9,240</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +2,140</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite&amp;ref=1">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="24000" data-momentum="98" data-new="2" data-save="11000" data-topics="通勤穿搭">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-600"># 早八穿搭</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +98%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">早八人救命！5 分钟出门的懒人穿搭公式</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">四个位置固定换，不用想搭配也能体面出门。附一周实穿记录。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#早八穿搭</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#懒人穿搭</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#通勤穿搭</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-sky-200 to-sky-400 text-[9px] font-bold text-white">早八</span>
+<span class="text-[11px] font-medium text-slate-600">早八研究所</span>
+<span class="ml-auto text-[10px] text-slate-400">4 小时前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>2.4w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>1.1w</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +1,320</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite&amp;ref=2">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="31000" data-momentum="154" data-new="3" data-save="16000" data-topics="家居改造">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-600"># 租房改造</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +154%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">租房改造｜12㎡ 卧室塞下书桌和衣帽间</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">没有砸墙、没有定制柜，靠三处挪动把空间腾了出来。附尺寸清单。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#租房改造</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#小户型收纳</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#空间利用</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-sky-200 to-sky-400 text-[9px] font-bold text-white">改造</span>
+<span class="text-[11px] font-medium text-slate-600">小户型改造日记</span>
+<span class="ml-auto text-[10px] text-slate-400">6 小时前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>3.1w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>1.6w</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +1,580</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite&amp;ref=3">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="9860" data-momentum="72" data-new="4" data-save="5120" data-topics="平价好物">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600"># 平价好物</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +72%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">被问爆的平价通勤包，容量真的离谱</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">预算两百出头，装下电脑和健身服。把每一层装了什么拍给你们看。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#通勤包</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#平价好物</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#包包分享</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-amber-200 to-orange-400 text-[9px] font-bold text-white">包</span>
+<span class="text-[11px] font-medium text-slate-600">包治百病阿柚</span>
+<span class="ml-auto text-[10px] text-slate-400">8 小时前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>9,860</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>5,120</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +640</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="12000" data-momentum="61" data-new="5" data-save="8430" data-topics="护肤成分">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-600"># 护肤分享</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +61%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">敏感肌换季护肤：把步骤减到 3 步</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">不是叠加得越多越好。记录了停用两周后的皮肤变化，附成分避雷。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#敏感肌护肤</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#换季护肤</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#成分党</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-teal-200 to-emerald-400 text-[9px] font-bold text-white">May</span>
+<span class="text-[11px] font-medium text-slate-600">成分党阿May</span>
+<span class="ml-auto text-[10px] text-slate-400">1 天前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>1.2w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>8,430</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +880</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="27000" data-momentum="187" data-new="6" data-save="19000" data-topics="一人食">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600"># 一人食</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +187%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">一周带饭不重样，成本 15 元以内</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">周日一次备菜，工作日十分钟装盒。把采购清单和搭配思路都列好了。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#带饭日常</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#一人食</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#快手菜</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-amber-200 to-orange-400 text-[9px] font-bold text-white">饭</span>
+<span class="text-[11px] font-medium text-slate-600">带饭不将就</span>
+<span class="ml-auto text-[10px] text-slate-400">1 天前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>2.7w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>1.9w</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +960</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="15000" data-momentum="84" data-new="7" data-save="9700" data-topics="通勤穿搭">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-600"># 小个子穿搭</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +84%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">小个子显高穿搭：把腰线提到这里</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">不靠高跟鞋，靠比例。三套通勤搭配前后对比，标注了衣服长度。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#小个子穿搭</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#显高技巧</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#通勤穿搭</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-violet-200 to-indigo-300 text-[9px] font-bold text-white">155</span>
+<span class="text-[11px] font-medium text-slate-600">155 的衣橱</span>
+<span class="ml-auto text-[10px] text-slate-400">2 天前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>1.5w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>9,700</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +510</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="8640" data-momentum="59" data-new="8" data-save="6210" data-topics="桌面好物">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-600"># 桌面改造</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +59%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">桌面改造｜500 元打造专注力工位</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">先把线藏起来，再谈氛围感。六件真正提升效率的桌面好物。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#桌面改造</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#工位好物</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#效率工具</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-slate-300 to-slate-500 text-[9px] font-bold text-white">工位</span>
+<span class="text-[11px] font-medium text-slate-600">工位改造局</span>
+<span class="ml-auto text-[10px] text-slate-400">2 天前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>8,640</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>6,210</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +320</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+<article class="topic-card" data-heat="22000" data-momentum="143" data-new="9" data-save="13000" data-topics="城市漫游">
+<div class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-600"># 城市漫游</span>
+<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+<iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>
+              收藏势能 +143%
+            </span>
+</div>
+<h2 class="mt-3 line-clamp-2 text-[15px] font-bold leading-6 text-slate-900">周末 citywalk 路线：人少好拍的 6 个点</h2>
+<p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">一条不赶时间的散步路线，全程 4 公里，附每个点位的拍摄时间建议。</p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#citywalk</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#周末去哪儿</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">#拍照机位</span>
+</div>
+<div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-teal-200 to-cyan-400 text-[9px] font-bold text-white">漫</span>
+<span class="text-[11px] font-medium text-slate-600">城市散步指南</span>
+<span class="ml-auto text-[10px] text-slate-400">3 天前</span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+<span class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:heart-linear" width="12"></iconify-icon>2.2w</span>
+<span class="inline-flex items-center gap-1"><iconify-icon icon="solar:bookmark-linear" width="12"></iconify-icon>1.3w</span>
+</span>
+<span class="text-[10px] text-slate-300">涨粉 +740</span>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2">
+<a class="inline-flex items-center justify-center gap-1 rounded-lg bg-brand-600 px-2 py-2 text-[11px] font-semibold text-white transition hover:bg-brand-700" href="create.html?mode=rewrite">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="13"></iconify-icon>
+              用于仿写
+            </a>
+<button class="inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-[11px] font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addToAssets(this)" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="13"></iconify-icon>
+              加入素材库
+            </button>
+</div>
+</div>
+</article>
+</section>
+<div class="mt-6 hidden rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center" id="emptyState">
+<span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-400">
+<iconify-icon icon="solar:magnifer-zoom-out-linear" width="24"></iconify-icon>
+</span>
+<p class="mt-4 text-sm font-semibold text-slate-700">没有匹配的热门内容</p>
+<p class="mt-1 text-xs text-slate-400">换个关键词，或把筛选切回「全部」。</p>
+<button class="mt-4 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-brand-600" onclick="resetFilters()" type="button">重置筛选</button>
+</div>
+<div class="mt-8 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+<div class="flex items-start gap-3">
+<span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-500">
+<iconify-icon icon="solar:info-circle-linear" width="18"></iconify-icon>
+</span>
+<div>
+<p class="text-sm font-semibold text-slate-800">关于话题追踪</p>
+<p class="mt-1 max-w-2xl text-[11px] leading-5 text-slate-400">
+            原型展示的是「关注话题 / 竞品账号 → 汇总热门笔记 → 挑选结构 → 进入仿写」的产品流程。所有账号、互动数据与涨粉势能均为虚构演示，不来自真实平台抓取。
+          </p>
+</div>
+</div>
+<a class="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-600" href="create.html">
+        去创作工作台
+        <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon>
+</a>
+</div>
+</main>
+<div class="pointer-events-none fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2 rounded-xl bg-slate-900/95 px-4 py-2.5 text-xs font-medium text-white shadow-lg" id="toast"></div>
+<script>
+    let activeTopic = '全部';
+    let assetAdded = 0;
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(function () {
+        el.classList.add('hidden');
+      }, 2500);
+    }
+
+    function setTopicFilter(btn, topic) {
+      activeTopic = topic;
+      document.querySelectorAll('[data-filter]').forEach(function (item) {
+        const active = item.dataset.filter === topic;
+        item.className = active
+          ? 'shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white transition'
+          : 'shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800';
+      });
+      applyFilters();
+      const filterBar = document.querySelector('[data-filter]');
+      if (filterBar) filterBar.scrollIntoView({ block: 'nearest' });
+    }
+
+    function applyFilters() {
+      const keyword = document.getElementById('topicSearch').value.trim().toLowerCase();
+      const cards = document.querySelectorAll('.topic-card');
+      let visible = 0;
+
+      cards.forEach(function (card) {
+        const topics = card.dataset.topics || '';
+        const text = card.textContent.toLowerCase();
+        const matchTopic = activeTopic === '全部' || topics.indexOf(activeTopic) !== -1;
+        const matchKeyword = !keyword || text.indexOf(keyword) !== -1;
+        const show = matchTopic && matchKeyword;
+        card.classList.toggle('hidden', !show);
+        if (show) visible += 1;
+      });
+
+      document.getElementById('visibleCount').textContent = String(visible);
+      document.getElementById('emptyState').classList.toggle('hidden', visible !== 0);
+    }
+
+    function sortCards() {
+      const mode = document.getElementById('sortSelect').value;
+      const grid = document.getElementById('topicGrid');
+      const cards = Array.prototype.slice.call(document.querySelectorAll('.topic-card'));
+
+      cards.sort(function (a, b) {
+        if (mode === 'save') {
+          return Number(b.dataset.save) - Number(a.dataset.save);
+        }
+        if (mode === 'heat') {
+          return Number(b.dataset.heat) - Number(a.dataset.heat);
+        }
+        return Number(a.dataset.new) - Number(b.dataset.new);
+      });
+
+      cards.forEach(function (card) {
+        grid.appendChild(card);
+      });
+    }
+
+    function resetFilters() {
+      activeTopic = '全部';
+      document.getElementById('topicSearch').value = '';
+      document.getElementById('sortSelect').value = 'new';
+      document.querySelectorAll('[data-filter]').forEach(function (item) {
+        const active = item.dataset.filter === '全部';
+        item.className = active
+          ? 'shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white transition'
+          : 'shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800';
+      });
+      sortCards();
+      applyFilters();
+    }
+
+    function toggleFollowForm() {
+      const form = document.getElementById('followForm');
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) {
+        document.getElementById('followInput').focus();
+      }
+    }
+
+    function addFollow() {
+      const input = document.getElementById('followInput');
+      const type = document.getElementById('followType').value;
+      const value = input.value.trim();
+      if (!value) {
+        toast('先输入想关注的话题或账号');
+        input.focus();
+        return;
+      }
+
+      if (type === '话题') {
+        const newTopic = value;
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600';
+        chip.textContent = '# ' + newTopic;
+        chip.addEventListener('click', function () {
+          resetFilters();
+        });
+        document.getElementById('followedTopics').appendChild(chip);
+
+        const filterChip = document.createElement('button');
+        filterChip.type = 'button';
+        filterChip.dataset.filter = newTopic;
+        filterChip.className = 'shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800';
+        filterChip.textContent = newTopic;
+        filterChip.addEventListener('click', function () {
+          setTopicFilter(filterChip, newTopic);
+        });
+        document.getElementById('quickFilterBar').appendChild(filterChip);
+      } else {
+        const accounts = document.getElementById('followedAccounts');
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 px-2.5 py-2';
+        row.innerHTML = '<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-slate-200 to-slate-400 text-[11px] font-bold text-white">新</span>'
+          + '<div class="min-w-0 flex-1"><p class="truncate text-[11px] font-semibold text-slate-700">' + value + '</p><p class="text-[10px] text-slate-400">待同步 · 原型演示</p></div>'
+          + '<span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">已关注</span>';
+        accounts.appendChild(row);
+      }
+
+      const countEl = document.getElementById('followCount');
+      countEl.textContent = type === '话题' ? '6 个话题 · 3 个账号' : '5 个话题 · 4 个账号';
+      input.value = '';
+      document.getElementById('followForm').classList.add('hidden');
+      toast('已关注「' + value + '」，热门内容会持续汇入');
+    }
+
+    function addToAssets(btn) {
+      if (btn.dataset.saved === '1') {
+        toast('这条内容已经在素材库里了');
+        return;
+      }
+      btn.dataset.saved = '1';
+      btn.className = 'inline-flex items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-2 text-[11px] font-semibold text-emerald-600';
+      btn.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="13"></iconify-icon>已加入素材库';
+      assetAdded += 1;
+      toast('已加入素材库 · 文案片段（演示）');
+    }
+
+    function refreshTopics() {
+      document.getElementById('lastUpdated').textContent = '刚刚';
+      toast('已刷新关注话题的热门内容');
+    }
+  </script>
+</body>
+</html>

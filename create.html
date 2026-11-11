@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI 对话创作 · 小红笔 AI</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#FFF1F3',
+              100: '#FFE2E7',
+              200: '#FFC7D1',
+              300: '#FF9BAC',
+              400: '#FF6B85',
+              500: '#F44464',
+              600: '#DC2749',
+              700: '#B91C3F'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 40px -24px rgba(15,23,42,0.25)'
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .typing-dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 9999px;
+      background: #94A3B8;
+      animation: blink 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: .18s; }
+    .typing-dot:nth-child(3) { animation-delay: .36s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: .25; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-2px); }
+    }
+    .ai-message { animation: rise .3s ease-out both; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    input[type="range"] { accent-color: #DC2749; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<!-- 顶部导航 -->
+<header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+<div class="mx-auto flex h-16 max-w-[1480px] items-center justify-between gap-4 px-5 sm:px-6">
+<a class="flex shrink-0 items-center gap-2.5" href="home.html">
+<span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/30">
+<iconify-icon icon="solar:pen-new-square-bold" width="20"></iconify-icon>
+</span>
+<span class="flex items-baseline gap-2">
+<span class="text-[17px] font-bold tracking-tight text-slate-900">小红笔 AI</span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">创作台</span>
+</span>
+</a>
+<nav class="hidden items-center gap-1 lg:flex">
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="home.html">首页</a>
+<a class="rounded-lg bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand-600" href="create.html">AI 创作</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="topics.html">话题追踪</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="assets.html">素材库</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="publish.html">发布管理</a>
+</nav>
+<div class="flex shrink-0 items-center gap-2 sm:gap-3">
+<a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="login.html">登录</a>
+<a class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+          开始创作
+          <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+</a>
+</div>
+</div>
+<div class="no-scrollbar flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 lg:hidden">
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="home.html">首页</a>
+<a class="shrink-0 rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-600" href="create.html">AI 创作</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="topics.html">话题追踪</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="assets.html">素材库</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="publish.html">发布管理</a>
+</div>
+</header>
+<main class="mx-auto max-w-[1480px] px-4 pb-6 pt-4 sm:px-6">
+<!-- 标题与模式切换 -->
+<div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+<div class="flex items-end gap-3">
+<div>
+<p class="flex items-center gap-1.5 text-[11px] text-slate-400">
+<a class="transition hover:text-slate-600" href="home.html">工作台</a>
+<iconify-icon icon="solar:alt-arrow-right-linear" width="11"></iconify-icon>
+            新建笔记
+          </p>
+<h1 class="mt-1 text-xl font-bold tracking-tight text-slate-900">AI 对话创作</h1>
+</div>
+<span class="mb-0.5 hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-600 sm:inline-flex">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          自动保存已开启
+        </span>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<div class="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+<button class="inline-flex items-center gap-1.5 rounded-lg bg-brand-50 px-3.5 py-2 text-xs font-semibold text-brand-600 transition" data-mode-tab="original" onclick="setMode('original')" type="button">
+<iconify-icon icon="solar:magic-stick-3-bold" width="14"></iconify-icon>
+            原创模式
+          </button>
+<button class="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium text-slate-500 transition hover:text-slate-800" data-mode-tab="rewrite" onclick="setMode('rewrite')" type="button">
+<iconify-icon icon="solar:documents-minimalistic-linear" width="14"></iconify-icon>
+            仿写模式
+          </button>
+</div>
+<a class="hidden items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 sm:inline-flex" href="publish.html">
+<iconify-icon icon="solar:clipboard-list-linear" width="15"></iconify-icon>
+          发布管理
+        </a>
+</div>
+</div>
+<div class="grid gap-4 lg:h-[calc(100vh-10.5rem)] lg:min-h-[640px] lg:grid-cols-12">
+<!-- 左：创作设置 -->
+<aside class="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-3">
+<div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-slate-400" icon="solar:tuning-2-linear" width="16"></iconify-icon>
+<span class="text-sm font-semibold text-slate-800">创作设置</span>
+</div>
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600" id="modeTag">原创模式</span>
+</div>
+<div class="no-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
+<!-- 原创模式面板 -->
+<div id="originalPanel">
+<div class="mb-4">
+<div class="flex items-center justify-between">
+<p class="text-[11px] font-medium text-slate-400">分步引导 · 约 1 分钟</p>
+<button class="text-[11px] font-medium text-brand-600 transition hover:text-brand-700" onclick="goStep(3)" type="button">跳到生成偏好</button>
+</div>
+<div class="mt-2.5 flex items-center gap-2">
+<button aria-label="第 1 步 选品输入" data-step-dot="1" onclick="goStep(1)" type="button">1</button>
+<div class="relative h-[3px] flex-1 overflow-hidden rounded-full bg-slate-100">
+<div class="absolute inset-y-0 left-0 rounded-full bg-brand-500 transition-all duration-300" id="stepProgress" style="width: 0%"></div>
+</div>
+<button aria-label="第 2 步 人群与语气" data-step-dot="2" onclick="goStep(2)" type="button">2</button>
+<div class="h-[3px] flex-1 rounded-full bg-slate-100"></div>
+<button aria-label="第 3 步 生成偏好" data-step-dot="3" onclick="goStep(3)" type="button">3</button>
+</div>
+<div class="mt-2 flex justify-between text-[10px] text-slate-400">
+<span>选品</span><span>人群</span><span>偏好</span>
+</div>
+</div>
+<!-- 步骤 1 -->
+<div class="space-y-4" data-step-panel="1">
+<div>
+<label class="mb-1.5 block text-xs font-semibold text-slate-700" for="topicInput">商品 / 主题名称<span class="ml-1 text-brand-500">*</span></label>
+<input class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="topicInput" placeholder="例如：轻量通勤托特包" type="text" value="轻量通勤托特包"/>
+</div>
+<div>
+<label class="mb-1.5 block text-xs font-semibold text-slate-700" for="categorySelect">所属类目</label>
+<select class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="categorySelect">
+<option>通勤箱包</option>
+<option>服饰穿搭</option>
+<option>家居好物</option>
+<option>护肤彩妆</option>
+<option>食品饮品</option>
+<option>桌面数码</option>
+<option>出行体验</option>
+</select>
+</div>
+<div>
+<label class="mb-1.5 block text-xs font-semibold text-slate-700" for="sellingInput">核心卖点</label>
+<textarea class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-xs leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="sellingInput" placeholder="每行一个卖点，AI 会按重要程度安排到正文里" rows="3">能装下 13 寸电脑
+自重轻，肩带不勒
+内袋分区清楚</textarea>
+<p class="mt-1.5 text-[10px] leading-4 text-slate-400">也可以先去<a class="font-medium text-brand-600 hover:text-brand-700" href="assets.html">素材库</a>挑一条卖点文案。</p>
+</div>
+</div>
+<!-- 步骤 2 -->
+<div class="hidden space-y-4" data-step-panel="2">
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">目标人群</p>
+<div class="flex flex-wrap gap-1.5" id="personaChips">
+<button aria-pressed="true" class="rounded-full border border-brand-500 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition" onclick="selectChip(this,'personaChips')" type="button">早八打工人</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'personaChips')" type="button">学生党</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'personaChips')" type="button">宝妈</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'personaChips')" type="button">小个子女生</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'personaChips')" type="button">租房党</button>
+</div>
+</div>
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">笔记语气</p>
+<div class="flex flex-wrap gap-1.5" id="toneChips">
+<button aria-pressed="true" class="rounded-full border border-brand-500 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition" onclick="selectChip(this,'toneChips')" type="button">真诚分享</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'toneChips')" type="button">轻松幽默</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'toneChips')" type="button">专业测评</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'toneChips')" type="button">闺蜜聊天</button>
+</div>
+</div>
+<div>
+<label class="mb-1.5 block text-xs font-semibold text-slate-700" for="lengthSelect">篇幅倾向</label>
+<select class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="lengthSelect">
+<option value="短笔记（约 250 字）">短笔记（约 250 字）</option>
+<option selected="" value="标准（400-600 字）">标准（400-600 字）</option>
+<option value="长文（800 字以上）">长文（800 字以上）</option>
+</select>
+</div>
+<div class="rounded-xl border border-sky-100 bg-sky-50/70 p-3">
+<p class="flex items-start gap-1.5 text-[11px] leading-5 text-sky-800">
+<iconify-icon class="mt-0.5 shrink-0" icon="solar:lightbulb-linear" width="14"></iconify-icon>
+                  人群决定用词和场景，语气决定句子的“人味”。拿不准时选「真诚分享」最稳。
+                </p>
+</div>
+</div>
+<!-- 步骤 3 -->
+<div class="hidden space-y-4" data-step-panel="3">
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">标题风格</p>
+<div class="flex flex-wrap gap-1.5" id="titleChips">
+<button aria-pressed="true" class="rounded-full border border-brand-500 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition" onclick="selectChip(this,'titleChips')" type="button">数字清单</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'titleChips')" type="button">反差对比</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'titleChips')" type="button">提问式</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="selectChip(this,'titleChips')" type="button">身份代入</button>
+</div>
+</div>
+<div>
+<div class="mb-1.5 flex items-center justify-between">
+<label class="text-xs font-semibold text-slate-700" for="tagRange">话题标签数量</label>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600"><span id="tagCountLabel">6</span> 个</span>
+</div>
+<input class="w-full" id="tagRange" max="10" min="3" oninput="document.getElementById('tagCountLabel').textContent = this.value" step="1" type="range" value="6"/>
+<div class="mt-1 flex justify-between text-[10px] text-slate-400"><span>3 个</span><span>10 个</span></div>
+</div>
+<label class="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5" for="emojiToggle">
+<span class="text-xs font-medium text-slate-700">加入适量 emoji</span>
+<input checked="" class="h-4 w-4 accent-brand-600" id="emojiToggle" type="checkbox"/>
+</label>
+<div>
+<label class="mb-1.5 block text-xs font-semibold text-slate-700" for="extraInput">补充要求（选填）</label>
+<textarea class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-xs leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="extraInput" placeholder="例如：不要出现价格，结尾加一个使用场景提问" rows="3"></textarea>
+</div>
+<div class="rounded-xl border border-dashed border-slate-200 bg-white p-3">
+<p class="text-[10px] leading-5 text-slate-400">生成后可在右侧预览中继续编辑，也可以直接对 AI 说“标题再抓人一点”。</p>
+</div>
+</div>
+</div>
+<!-- 仿写模式面板 -->
+<div class="hidden space-y-4" id="rewritePanel">
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">爆款笔记来源</p>
+<div class="flex rounded-lg bg-slate-100 p-1">
+<button class="flex-1 rounded-md bg-white px-2 py-1.5 text-[11px] font-semibold text-brand-600 shadow-sm" data-source-tab="pick" onclick="setSourceTab('pick')" type="button">从追踪选取</button>
+<button class="flex-1 rounded-md px-2 py-1.5 text-[11px] font-medium text-slate-500" data-source-tab="paste" onclick="setSourceTab('paste')" type="button">粘贴笔记</button>
+<button class="flex-1 rounded-md px-2 py-1.5 text-[11px] font-medium text-slate-500" data-source-tab="keyword" onclick="setSourceTab('keyword')" type="button">关键词</button>
+</div>
+</div>
+<div class="space-y-2" id="sourcePick">
+<button class="flex w-full flex-col gap-1 rounded-xl border border-brand-500 bg-brand-50/50 p-2.5 text-left transition" data-ref="1" onclick="selectRef(1, this)" type="button">
+<span class="text-[11px] font-semibold leading-5 text-slate-800">通勤包里到底该装什么？我的一周实测</span>
+<span class="flex items-center gap-2 text-[10px] text-slate-400">
+<span>#通勤穿搭</span><span>·</span><span>收藏 9,240</span>
+</span>
+</button>
+<button class="flex w-full flex-col gap-1 rounded-xl border border-slate-200 bg-white p-2.5 text-left transition hover:border-brand-200" data-ref="2" onclick="selectRef(2, this)" type="button">
+<span class="text-[11px] font-semibold leading-5 text-slate-800">早八人救命！5 分钟出门的懒人穿搭公式</span>
+<span class="flex items-center gap-2 text-[10px] text-slate-400">
+<span>#早八穿搭</span><span>·</span><span>收藏 1.1w</span>
+</span>
+</button>
+<button class="flex w-full flex-col gap-1 rounded-xl border border-slate-200 bg-white p-2.5 text-left transition hover:border-brand-200" data-ref="3" onclick="selectRef(3, this)" type="button">
+<span class="text-[11px] font-semibold leading-5 text-slate-800">租房改造｜12㎡ 卧室塞下书桌和衣帽间</span>
+<span class="flex items-center gap-2 text-[10px] text-slate-400">
+<span>#租房改造</span><span>·</span><span>收藏 1.6w</span>
+</span>
+</button>
+<a class="flex items-center justify-center gap-1 rounded-lg border border-dashed border-slate-200 py-2 text-[10px] font-medium text-slate-500 transition hover:border-brand-200 hover:text-brand-600" href="topics.html">
+<iconify-icon icon="solar:add-circle-linear" width="13"></iconify-icon>
+                去话题追踪挑更多
+              </a>
+</div>
+<div class="hidden" id="sourcePaste">
+<textarea class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-xs leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="refPaste" placeholder="把参考笔记的标题和正文粘贴到这里…" rows="5"></textarea>
+</div>
+<div class="hidden" id="sourceKeyword">
+<div class="flex gap-2">
+<input class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-xs text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50" id="refKeyword" placeholder="输入话题关键词" type="text"/>
+</div>
+<p class="mt-2 text-[10px] leading-5 text-slate-400">AI 会按关键词在已关注话题中匹配一篇高收藏结构，仅用于结构参考。</p>
+</div>
+<button class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-600" onclick="analyzeStructure()" type="button">
+<iconify-icon icon="solar:magic-stick-3-linear" width="15"></iconify-icon>
+              解析参考结构
+            </button>
+<div class="hidden rounded-xl border border-brand-100 bg-brand-50/50 p-3" id="analysisCard">
+<div class="flex items-center justify-between">
+<p class="text-[11px] font-semibold text-brand-700">结构解析结果</p>
+<span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-brand-600">匹配度 92%</span>
+</div>
+<p class="mt-1.5 truncate text-[10px] text-slate-500" id="analysisTitle">通勤包实测参考</p>
+<div class="mt-2.5 space-y-2 text-[10px]">
+<div class="flex items-start justify-between gap-2">
+<span class="shrink-0 text-slate-400">标题结构</span>
+<span class="text-right font-medium text-slate-700">痛点提问 + 时长背书</span>
+</div>
+<div class="flex items-start justify-between gap-2">
+<span class="shrink-0 text-slate-400">开篇钩子</span>
+<span class="text-right font-medium text-slate-700">反常识结论 + 真实体验</span>
+</div>
+<div class="flex items-start justify-between gap-2">
+<span class="shrink-0 text-slate-400">正文分段</span>
+<span class="text-right font-medium text-slate-700">3 段小标题，逐条给证据</span>
+</div>
+<div class="flex items-start justify-between gap-2">
+<span class="shrink-0 text-slate-400">结尾引导</span>
+<span class="text-right font-medium text-slate-700">评论区提问 + 场景补充</span>
+</div>
+<div class="flex items-start justify-between gap-2">
+<span class="shrink-0 text-slate-400">标签策略</span>
+<span class="text-right font-medium text-slate-700">人群 2 + 场景 2 + 品类 2</span>
+</div>
+</div>
+</div>
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">改写要求</p>
+<div class="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-2.5">
+<label class="flex items-center gap-2 text-[11px] text-slate-600">
+<input checked="" class="h-3.5 w-3.5 accent-brand-600" type="checkbox"/>
+                  保留开篇钩子节奏
+                </label>
+<label class="flex items-center gap-2 text-[11px] text-slate-600">
+<input checked="" class="h-3.5 w-3.5 accent-brand-600" type="checkbox"/>
+                  保留正文分段结构
+                </label>
+<label class="flex items-center gap-2 text-[11px] text-slate-600">
+<input class="h-3.5 w-3.5 accent-brand-600" type="checkbox"/>
+                  沿用原标签组合
+                </label>
+</div>
+</div>
+<div>
+<p class="mb-2 text-xs font-semibold text-slate-700">换什么角度</p>
+<div class="flex flex-wrap gap-1.5" id="angleChips">
+<button aria-pressed="true" class="rounded-full border border-brand-500 bg-brand-50 px-2.5 py-1.5 text-[11px] font-medium text-brand-600 transition" onclick="selectChip(this,'angleChips')" type="button">换人群</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-300" onclick="selectChip(this,'angleChips')" type="button">换场景</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-300" onclick="selectChip(this,'angleChips')" type="button">换价格带</button>
+<button aria-pressed="false" class="rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-300" onclick="selectChip(this,'angleChips')" type="button">换表达风格</button>
+</div>
+</div>
+<div>
+<div class="mb-1.5 flex items-center justify-between">
+<label class="text-xs font-semibold text-slate-700" for="rewriteRange">改写力度</label>
+<span class="text-[10px] text-slate-400" id="rewriteLabel">中度改写</span>
+</div>
+<input class="w-full" id="rewriteRange" max="100" min="20" oninput="updateRewriteLabel(this.value)" step="10" type="range" value="60"/>
+<p class="mt-1 text-[10px] leading-4 text-slate-400">力度越大越接近原创表达，结构参考保持不变。</p>
+</div>
+</div>
+</div>
+<div class="border-t border-slate-100 p-3" id="originalFooter">
+<div class="flex gap-2">
+<button class="inline-flex flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40" id="prevBtn" onclick="goStep(currentStep - 1)" type="button">
+<iconify-icon icon="solar:arrow-left-linear" width="14"></iconify-icon>
+              上一步
+            </button>
+<button class="inline-flex flex-[1.4] items-center justify-center gap-1 rounded-xl bg-brand-600 px-3 py-2.5 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" id="nextBtn" type="button">
+              下一步
+              <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon>
+</button>
+</div>
+<p class="mt-2 text-center text-[10px] text-slate-400">内容仅在演示环境内使用</p>
+</div>
+<div class="hidden border-t border-slate-100 p-3" id="rewriteFooter">
+<button class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-3 py-3 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" onclick="rewriteStart(false)" type="button">
+<iconify-icon icon="solar:documents-minimalistic-bold" width="15"></iconify-icon>
+            开始改写
+          </button>
+<p class="mt-2 text-center text-[10px] text-slate-400">改写结果会同步到右侧预览</p>
+</div>
+</aside>
+<!-- 中：AI 对话 -->
+<section class="flex min-h-[540px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-5 lg:min-h-0">
+<div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+<div class="flex items-center gap-2.5">
+<div class="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white">
+<iconify-icon icon="fluent:sparkle-24-filled" width="17"></iconify-icon>
+<span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500"></span>
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900">AI 创作助手</p>
+<p class="text-[10px] text-slate-400">在线 · 熟悉小红书选题与表达</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="hidden rounded-full border border-slate-200 px-2.5 py-1 text-[10px] text-slate-500 sm:inline">小红笔 Agent</span>
+<button aria-label="清空对话" class="grid h-7 w-7 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-50 hover:text-slate-600" onclick="resetChat()" type="button">
+<iconify-icon icon="solar:refresh-linear" width="15"></iconify-icon>
+</button>
+</div>
+</div>
+<div class="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto bg-slate-50/60 px-4 py-4" id="chatLog"></div>
+<div class="border-t border-slate-100 bg-white p-3">
+<div class="mb-2 flex flex-wrap gap-1.5">
+<button class="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="sendQuick('标题再抓人一点')" type="button">标题再抓人一点</button>
+<button class="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="sendQuick('把正文压缩到 300 字')" type="button">正文压缩到 300 字</button>
+<button class="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="sendQuick('多给 5 个标签')" type="button">多给 5 个标签</button>
+<button class="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600" onclick="sendQuick('换一个开篇钩子')" type="button">换个开篇钩子</button>
+</div>
+<div class="flex items-end gap-2 rounded-xl border border-slate-200 bg-slate-50/70 p-2 transition focus-within:border-brand-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-brand-50">
+<textarea class="max-h-24 min-h-[24px] flex-1 resize-none bg-transparent px-1 py-1 text-[13px] leading-5 text-slate-800 outline-none placeholder:text-slate-400" id="chatInput" placeholder="继续追问，例如：结尾再自然一点…" rows="1"></textarea>
+<button aria-label="发送消息" class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-600 text-white shadow-sm transition hover:bg-brand-700" onclick="sendMessage()" type="button">
+<iconify-icon icon="mdi:send" width="15"></iconify-icon>
+</button>
+</div>
+<p class="mt-1.5 text-[10px] text-slate-400">AI 生成内容仅作参考，发布前请自行核对事实与平台规范。</p>
+</div>
+</section>
+<!-- 右：笔记预览 -->
+<aside class="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-4">
+<div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-slate-400" icon="solar:document-text-linear" width="16"></iconify-icon>
+<span class="text-sm font-semibold text-slate-800">笔记预览</span>
+</div>
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600" id="previewStatus">AI 初稿</span>
+</div>
+<div class="no-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
+<div class="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-brand-100 via-orange-50 to-sky-100">
+<div class="grid-bg absolute inset-0 opacity-60"></div>
+<div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/50 blur-xl"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-white/85 px-2 py-1 text-[10px] font-medium text-slate-600 backdrop-blur">
+<iconify-icon icon="solar:gallery-wide-linear" width="12"></iconify-icon>
+              封面占位 · 1080×1440
+            </div>
+<div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+<span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/80 text-brand-500 shadow-sm">
+<iconify-icon icon="solar:gallery-wide-bold" width="22"></iconify-icon>
+</span>
+<p class="text-[11px] font-medium text-slate-500">通勤场景封面</p>
+</div>
+<button class="absolute right-2.5 top-2.5 rounded-lg bg-white/90 px-2 py-1 text-[10px] font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:bg-white" onclick="toast('封面生成能力为原型示意，发布前请替换为原创图片')" type="button">
+              AI 生成封面
+            </button>
+</div>
+<div class="mt-4">
+<div class="flex items-center justify-between">
+<label class="text-[11px] font-semibold text-slate-500" for="noteTitle">标题</label>
+<span class="text-[10px] text-slate-400" id="titleCount">0/20</span>
+</div>
+<input class="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold leading-6 text-slate-900 outline-none transition focus:border-brand-300 focus:ring-4 focus:ring-brand-50" id="noteTitle" maxlength="20" type="text" value="早八人请进｜这只通勤包真的能装"/>
+</div>
+<div class="mt-3 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+<span class="flex items-center gap-1.5 text-[10px] text-slate-500">
+<iconify-icon icon="solar:refresh-circle-linear" width="13"></iconify-icon>
+              自动保存 · 刚刚
+            </span>
+<span class="text-[10px] text-slate-400"><span id="bodyCount">0</span> 字</span>
+</div>
+<div class="mt-3">
+<label class="text-[11px] font-semibold text-slate-500" for="noteBody">正文</label>
+<textarea class="mt-1.5 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[12px] leading-6 text-slate-700 outline-none transition focus:border-brand-300 focus:ring-4 focus:ring-brand-50" id="noteBody" rows="9"></textarea>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold text-slate-500">话题标签</span>
+<span class="text-[10px] text-slate-400">建议 4-8 个</span>
+</div>
+<div class="mt-1.5 flex flex-wrap gap-1.5" id="tagList"></div>
+<div class="mt-2 flex gap-1.5">
+<input class="w-full rounded-lg border border-slate-200 bg-slate-50/60 px-2.5 py-1.5 text-[11px] text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white" id="tagInput" placeholder="添加标签，如 通勤好物" type="text"/>
+<button class="shrink-0 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="addTag()" type="button">添加</button>
+</div>
+</div>
+<div class="mt-3">
+<p class="text-[11px] font-semibold text-slate-500">emoji 建议</p>
+<div class="mt-1.5 flex flex-wrap gap-1.5">
+<button class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm transition hover:border-brand-200" onclick="insertEmoji('✨')" type="button">✨</button>
+<button class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm transition hover:border-brand-200" onclick="insertEmoji('👜')" type="button">👜</button>
+<button class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm transition hover:border-brand-200" onclick="insertEmoji('🙌')" type="button">🙌</button>
+<button class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm transition hover:border-brand-200" onclick="insertEmoji('💡')" type="button">💡</button>
+<button class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm transition hover:border-brand-200" onclick="insertEmoji('👇')" type="button">👇</button>
+</div>
+</div>
+<div class="mt-4 rounded-xl border border-amber-100 bg-amber-50/70 p-3">
+<p class="flex items-start gap-1.5 text-[10px] leading-5 text-amber-800">
+<iconify-icon class="mt-0.5 shrink-0" icon="solar:shield-warning-linear" width="14"></iconify-icon>
+              发布前建议检查：极限词、绝对化功效描述、价格与实际是否一致。定稿时会给出静态检查清单。
+            </p>
+</div>
+</div>
+<div class="border-t border-slate-100 p-3">
+<div class="grid grid-cols-3 gap-2">
+<button class="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50" onclick="regenerate()" type="button">
+<iconify-icon icon="solar:refresh-linear" width="14"></iconify-icon>
+              重新生成
+            </button>
+<button class="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50" onclick="saveDraft()" type="button">
+<iconify-icon icon="solar:bookmark-linear" width="14"></iconify-icon>
+              保存草稿
+            </button>
+<button class="inline-flex items-center justify-center gap-1 rounded-xl bg-brand-600 px-2 py-2.5 text-[11px] font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" onclick="openFinal()" type="button">
+<iconify-icon icon="solar:check-circle-linear" width="14"></iconify-icon>
+              进入定稿
+            </button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- 定稿弹层 -->
+<div aria-hidden="true" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm" id="finalModal">
+<div class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+<div class="flex items-start justify-between border-b border-slate-100 px-5 py-4">
+<div>
+<p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-500">定稿检查</p>
+<h2 class="mt-1 text-base font-bold text-slate-900">发布前再确认一下</h2>
+</div>
+<button aria-label="关闭定稿检查" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-50 hover:text-slate-600" onclick="closeFinal()" type="button">
+<iconify-icon icon="solar:close-circle-linear" width="18"></iconify-icon>
+</button>
+</div>
+<div class="px-5 py-4">
+<div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+<p class="text-[10px] text-slate-400">即将定稿</p>
+<p class="mt-1 truncate text-sm font-semibold text-slate-800" id="finalTitle">早八人请进｜这只通勤包真的能装</p>
+<div class="mt-2 flex items-center gap-4 text-[10px] text-slate-500">
+<span>正文 <span class="font-semibold text-slate-700" id="finalWords">0</span> 字</span>
+<span>标签 <span class="font-semibold text-slate-700" id="finalTags">0</span> 个</span>
+<span>封面 已占位</span>
+</div>
+</div>
+<div class="mt-4 space-y-2">
+<div class="flex items-start gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50/70 px-3 py-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-emerald-500" icon="solar:check-circle-bold" width="15"></iconify-icon>
+<p class="text-[11px] leading-5 text-emerald-800">未发现「最 / 第一 / 绝对」等极限词。</p>
+</div>
+<div class="flex items-start gap-2.5 rounded-lg border border-amber-100 bg-amber-50/70 px-3 py-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-amber-500" icon="solar:danger-triangle-bold" width="15"></iconify-icon>
+<p class="text-[11px] leading-5 text-amber-800">「显瘦」等效果描述建议改为「视觉上更利落」，避免绝对化承诺。</p>
+</div>
+<div class="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-slate-400" icon="solar:info-circle-bold" width="15"></iconify-icon>
+<p class="text-[11px] leading-5 text-slate-600">封面为占位视觉，发布前请替换为原创图片并确认授权。</p>
+</div>
+</div>
+<p class="mt-3 text-[10px] leading-5 text-slate-400">以上为静态合规检查示意，不构成法律意见；请以平台最新规范为准。</p>
+</div>
+<div class="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-4 sm:flex-row sm:justify-end">
+<a class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50" href="publish.html">
+          保存为草稿
+        </a>
+<a class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="publish.html">
+          保存并标记待发布
+          <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon>
+</a>
+</div>
+</div>
+</div>
+<!-- 提示 -->
+<div class="pointer-events-none fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2 rounded-xl bg-slate-900/95 px-4 py-2.5 text-xs font-medium text-white shadow-lg" id="toast"></div>
+<script>
+    const chipOff = 'rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand-300 hover:text-brand-600';
+    const chipOn = 'rounded-full border border-brand-500 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition';
+    const angleOff = 'rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-300';
+    const angleOn = 'rounded-full border border-brand-500 bg-brand-50 px-2.5 py-1.5 text-[11px] font-medium text-brand-600 transition';
+    const refOff = 'flex w-full flex-col gap-1 rounded-xl border border-slate-200 bg-white p-2.5 text-left transition hover:border-brand-200';
+    const refOn = 'flex w-full flex-col gap-1 rounded-xl border border-brand-500 bg-brand-50/50 p-2.5 text-left transition';
+
+    let currentMode = 'original';
+    let currentStep = 1;
+    let selectedRef = 1;
+    let currentTags = [];
+    let variant = 0;
+    let generated = false;
+
+    const titleTemplates = [
+      function (topic) { return topic + '｜用了 3 周才敢说的 5 个真实细节'; },
+      function (topic) { return '别再乱买通勤包了，' + topic + '才是真的能装'; },
+      function (topic) { return '通勤包怎么选？' + topic + '实测一个月'; },
+      function (topic) { return '早八人请进｜' + topic + '救了我的每一天'; }
+    ];
+
+    const titleStyleIndex = {
+      '数字清单': 0,
+      '反差对比': 1,
+      '提问式': 2,
+      '身份代入': 3
+    };
+
+    const tagMap = {
+      '通勤箱包': ['通勤穿搭', '包包分享', '打工人日常', '通勤好物', '一包多背', '轻量出行', '平价好物', '早八通勤'],
+      '服饰穿搭': ['每日穿搭', '通勤穿搭', '小个子穿搭', '基础款搭配', '早八穿搭', '显高技巧', '衣橱管理', '换季穿搭'],
+      '家居好物': ['家居好物', '租房改造', '小户型收纳', '居家幸福感', '桌面布置', '改造日记', '空间利用', '好物分享'],
+      '护肤彩妆': ['护肤分享', '换季护肤', '敏感肌护肤', '成分党', '早C晚A', '底妆测评', '空瓶记', '护肤步骤'],
+      '食品饮品': ['一人食', '带饭日常', '快手早餐', '美食日记', '低卡食谱', '咖啡续命', '厨房小白', '便当灵感'],
+      '桌面数码': ['桌面改造', '工位好物', '数码好物', '效率工具', '提升专注力', '桌面收纳', '办公好物', '极简工位'],
+      '出行体验': ['城市漫游', '周末去哪儿', 'citywalk', '小众路线', '出门散步', '旅行记录', '拍照机位', '本地生活']
+    };
+
+    const refNotes = {
+      1: {
+        title: '通勤包里到底该装什么？我的一周实测',
+        noteTitle: '通勤包别只看颜值｜我把这只包用出了 3 种背法',
+        tags: ['通勤穿搭', '包包分享', '打工人日常', '一包多背', '通勤好物', '轻量出行'],
+        body: '✨ 一周实测下来，通勤包最重要的不是大，而是「拿得到」。\n\n① 周一：电脑 + 充电器 + 折叠伞\n主袋放电脑，前袋放钥匙和工牌，过安检不用翻包。\n\n② 周三：健身服 + 水杯\n侧袋刚好卡住水杯，湿毛巾单独收在隔层，不会弄湿电脑。\n\n③ 周五：只带手机和口红\n肩带调短一点，单肩背也不显拖沓。\n\n用了七天，最直接的感受是：包的分区比容量更影响每天的心情。\n\n你的通勤包里一定会带什么？评论区告诉我，我帮你判断这只包够不够装～'
+      },
+      2: {
+        title: '早八人救命！5 分钟出门的懒人穿搭公式',
+        noteTitle: '早八人穿搭公式｜5 分钟出门还像认真打扮过',
+        tags: ['早八穿搭', '通勤穿搭', '懒人穿搭', '基础款搭配', '每日穿搭', '打工人日常'],
+        body: '✨ 早八人的体面，靠的不是早起，是公式。\n\n① 上装：一件有版型的针织或衬衫，领口干净就赢一半。\n② 下装：直筒裤或半裙，坐下不皱，站起来不邋遢。\n③ 外层：轻薄外套，地铁里能脱，办公室里能披。\n④ 包：能装电脑的托特，颜色跟鞋子呼应。\n\n我的一周搭配都围绕这四个位置换，五分钟出门也不会乱。\n\n你最常穿的通勤组合是什么？来评论区交换一下～'
+      },
+      3: {
+        title: '租房改造｜12㎡ 卧室塞下书桌和衣帽间',
+        noteTitle: '12㎡ 小卧室改造｜书桌和衣帽间真的可以同时拥有',
+        tags: ['租房改造', '小户型收纳', '家居好物', '空间利用', '改造日记', '居家幸福感'],
+        body: '✨ 12㎡ 不是将就的理由。我把卧室拆成三个区，反而比之前更空。\n\n① 睡眠区：床靠墙放，省出一条完整通道。\n② 工作区：书桌顺着窗台延伸，白天不用开灯。\n③ 收纳区：用帘子代替柜门，视觉上轻很多。\n\n最值得的一步是把「进门第一眼」留给空白墙面，空间立刻显大。\n\n想看哪一区的细节？评论区告诉我，下一条拆开讲～'
+      }
+    };
+
+    function selectChip(btn, groupId) {
+      const group = document.getElementById(groupId);
+      if (!group) return;
+      const isAngle = groupId === 'angleChips';
+      group.querySelectorAll('button').forEach(function (item) {
+        item.className = isAngle ? angleOff : chipOff;
+        item.setAttribute('aria-pressed', 'false');
+      });
+      btn.className = isAngle ? angleOn : chipOn;
+      btn.setAttribute('aria-pressed', 'true');
+    }
+
+    function getChipText(groupId, fallback) {
+      const group = document.getElementById(groupId);
+      if (!group) return fallback;
+      const active = group.querySelector('[aria-pressed="true"]');
+      return active ? active.textContent.trim() : fallback;
+    }
+
+    function goStep(target) {
+      currentStep = Math.max(1, Math.min(3, target));
+      document.querySelectorAll('[data-step-panel]').forEach(function (panel) {
+        panel.classList.toggle('hidden', Number(panel.dataset.stepPanel) !== currentStep);
+      });
+      document.querySelectorAll('[data-step-dot]').forEach(function (dot) {
+        const index = Number(dot.dataset.stepDot);
+        dot.className = index === currentStep
+          ? 'grid h-6 w-6 place-items-center rounded-full border border-brand-500 bg-brand-500 text-[11px] font-bold text-white'
+          : index < currentStep
+            ? 'grid h-6 w-6 place-items-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-bold text-brand-600'
+            : 'grid h-6 w-6 place-items-center rounded-full border border-slate-200 bg-white text-[11px] font-bold text-slate-400';
+        if (index === currentStep) {
+          dot.setAttribute('aria-current', 'step');
+        } else {
+          dot.removeAttribute('aria-current');
+        }
+      });
+
+      const progress = document.getElementById('stepProgress');
+      progress.style.width = ((currentStep - 1) / 2 * 100) + '%';
+
+      const prevBtn = document.getElementById('prevBtn');
+      prevBtn.disabled = currentStep === 1;
+      prevBtn.className = currentStep === 1
+        ? 'inline-flex flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 transition disabled:cursor-not-allowed disabled:opacity-40'
+        : 'inline-flex flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50';
+
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.innerHTML = currentStep === 3
+        ? '生成笔记 <iconify-icon icon="solar:magic-stick-3-bold" width="14"></iconify-icon>'
+        : '下一步 <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon>';
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const isOriginal = mode === 'original';
+
+      document.getElementById('originalPanel').classList.toggle('hidden', !isOriginal);
+      document.getElementById('rewritePanel').classList.toggle('hidden', isOriginal);
+      document.getElementById('originalFooter').classList.toggle('hidden', !isOriginal);
+      document.getElementById('rewriteFooter').classList.toggle('hidden', isOriginal);
+      document.getElementById('modeTag').textContent = isOriginal ? '原创模式' : '仿写模式';
+
+      document.querySelectorAll('[data-mode-tab]').forEach(function (tab) {
+        const active = tab.dataset.modeTab === mode;
+        tab.className = active
+          ? 'inline-flex items-center gap-1.5 rounded-lg bg-brand-50 px-3.5 py-2 text-xs font-semibold text-brand-600 transition'
+          : 'inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium text-slate-500 transition hover:text-slate-800';
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      resetChat();
+    }
+
+    function resetChat() {
+      const log = document.getElementById('chatLog');
+      log.innerHTML = '';
+      if (currentMode === 'original') {
+        addMsg('assistant', '你好，我是小红笔 AI。先在左侧告诉我这次要写什么，我们按「选品 → 人群 → 偏好」三步来。\n如果方向已经清楚，也可以直接点「生成笔记」。');
+      } else {
+        addMsg('assistant', '已切到仿写模式。把想参考的爆款笔记粘贴进来，或者从话题追踪里选一条，我会先拆结构，再换成你的角度重写，不会照搬原文。');
+      }
+    }
+
+    function addMsg(role, text) {
+      const log = document.getElementById('chatLog');
+      const row = document.createElement('div');
+      row.className = role === 'user'
+        ? 'ai-message flex justify-end'
+        : 'ai-message flex items-start gap-2.5';
+
+      if (role === 'assistant') {
+        const avatar = document.createElement('span');
+        avatar.className = 'grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm';
+        avatar.innerHTML = '<iconify-icon icon="fluent:sparkle-24-filled" width="14"></iconify-icon>';
+        row.appendChild(avatar);
+      }
+
+      const bubble = document.createElement('div');
+      bubble.className = role === 'user'
+        ? 'max-w-[85%] whitespace-pre-line rounded-2xl rounded-tr-md bg-brand-500 px-3.5 py-2.5 text-[13px] leading-relaxed text-white shadow-sm'
+        : 'max-w-[88%] whitespace-pre-line rounded-2xl rounded-tl-md border border-slate-200 bg-white px-3.5 py-2.5 text-[13px] leading-relaxed text-slate-700 shadow-sm';
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+      return row;
+    }
+
+    function showThinking(label) {
+      removeThinking();
+      const log = document.getElementById('chatLog');
+      const row = document.createElement('div');
+      row.id = 'thinkingBubble';
+      row.className = 'flex items-start gap-2.5';
+
+      const avatar = document.createElement('span');
+      avatar.className = 'grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm';
+      avatar.innerHTML = '<iconify-icon icon="fluent:sparkle-24-filled" width="14"></iconify-icon>';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'rounded-2xl rounded-tl-md border border-slate-200 bg-white px-3.5 py-2.5 text-[13px] text-slate-500 shadow-sm';
+      bubble.appendChild(document.createTextNode(label + ' '));
+
+      const dots = document.createElement('span');
+      dots.className = 'inline-flex items-center gap-0.5 align-middle';
+      dots.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      bubble.appendChild(dots);
+
+      row.append(avatar, bubble);
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function removeThinking() {
+      const el = document.getElementById('thinkingBubble');
+      if (el) el.remove();
+    }
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(function () {
+        el.classList.add('hidden');
+      }, 2600);
+    }
+
+    function buildNote() {
+      const topic = document.getElementById('topicInput').value.trim() || '轻量通勤托特包';
+      const category = document.getElementById('categorySelect').value;
+      const persona = getChipText('personaChips', '早八打工人');
+      const tone = getChipText('toneChips', '真诚分享');
+      const titleStyle = getChipText('titleChips', '数字清单');
+      const tagCount = Number(document.getElementById('tagRange').value);
+      const useEmoji = document.getElementById('emojiToggle').checked;
+      const categoryTags = tagMap[category] || tagMap['通勤箱包'];
+
+      const styleIndex = titleStyleIndex[titleStyle] !== undefined ? titleStyleIndex[titleStyle] : 0;
+      const title = titleTemplates[(styleIndex + variant) % titleTemplates.length](topic);
+
+      const closes = {
+        '真诚分享': '以上都是我自己用下来的真实感受，有不同体验也欢迎在评论区聊聊～',
+        '轻松幽默': '总之，包是好包，就是别再让我装下整个家了（笑）。',
+        '专业测评': '如果你也在意容量、自重和耐用度，可以把这三项列成自己的选购清单。',
+        '闺蜜聊天': '姐妹们的通勤包里都装什么？评论区互相抄作业呀～'
+      };
+
+      const emojiHead = useEmoji ? '✨ ' : '';
+      const line1 = useEmoji ? '👜 ' : '';
+      const line2 = useEmoji ? '🪶 ' : '';
+      const line3 = useEmoji ? '🔍 ' : '';
+
+      const body = emojiHead + '先说结论：' + topic + ' 是我最近使用频率最高的一只包。\n\n'
+        + line1 + '① 容量比看上去更能装\n'
+        + '13 寸电脑、折叠伞、水杯和化妆包都能放下，内袋分区也很清楚，找东西不用翻半天。\n\n'
+        + line2 + '② 自重控制得不错\n'
+        + '装满之后肩带压力可以接受，通勤 40 分钟没有明显勒肩。\n\n'
+        + line3 + '③ 细节决定使用频率\n'
+        + '拉链顺滑、底部有支撑，放在地铁座位上不会软塌，周末出门也能背。\n\n'
+        + '适合人群：' + persona + '，想要一只通勤和周末都能用的包。\n\n'
+        + (closes[tone] || closes['真诚分享']);
+
+      const tags = categoryTags.slice(0, tagCount);
+      return { title: title, body: body, tags: tags };
+    }
+
+    function applyNote(note, statusText) {
+      const titleInput = document.getElementById('noteTitle');
+      const bodyInput = document.getElementById('noteBody');
+      titleInput.value = note.title;
+      bodyInput.value = note.body;
+      renderTags(note.tags);
+      updateCounts();
+      document.getElementById('previewStatus').textContent = statusText || 'AI 初稿';
+      generated = true;
+    }
+
+    function updateCounts() {
+      const titleInput = document.getElementById('noteTitle');
+      const bodyInput = document.getElementById('noteBody');
+      document.getElementById('titleCount').textContent = titleInput.value.length + '/20';
+      document.getElementById('bodyCount').textContent = String(bodyInput.value.length);
+    }
+
+    function renderTags(tags) {
+      currentTags = tags.slice();
+      const wrap = document.getElementById('tagList');
+      wrap.innerHTML = '';
+      currentTags.forEach(function (tag, index) {
+        const chip = document.createElement('span');
+        chip.className = 'inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-medium text-brand-600';
+        chip.appendChild(document.createTextNode('#' + tag));
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'grid h-3.5 w-3.5 place-items-center rounded-full transition hover:bg-brand-100';
+        remove.setAttribute('aria-label', '移除标签 ' + tag);
+        remove.innerHTML = '<iconify-icon icon="solar:close-circle-bold" width="11"></iconify-icon>';
+        remove.addEventListener('click', function () {
+          currentTags.splice(index, 1);
+          renderTags(currentTags);
+          updateCounts();
+        });
+        chip.appendChild(remove);
+        wrap.appendChild(chip);
+      });
+      updateCounts();
+    }
+
+    function addTag() {
+      const input = document.getElementById('tagInput');
+      const value = input.value.replace(/^#/, '').trim();
+      if (!value) {
+        toast('先输入一个标签名称');
+        return;
+      }
+      if (currentTags.length >= 10) {
+        toast('标签最多 10 个，先删掉一个吧');
+        return;
+      }
+      if (currentTags.indexOf(value) !== -1) {
+        toast('这个标签已经在列表里了');
+        return;
+      }
+      currentTags.push(value.slice(0, 12));
+      renderTags(currentTags);
+      input.value = '';
+      toast('已添加标签 #' + value.slice(0, 12));
+    }
+
+    function insertEmoji(emoji) {
+      const bodyInput = document.getElementById('noteBody');
+      bodyInput.value = bodyInput.value.replace(/\s+$/, '') + ' ' + emoji;
+      updateCounts();
+      toast('已插入 ' + emoji + '，可继续手动微调');
+    }
+
+    function generateFromForm() {
+      const topicInput = document.getElementById('topicInput');
+      const topic = topicInput.value.trim();
+      if (!topic) {
+        toast('先告诉我商品或主题名称');
+        topicInput.focus();
+        return;
+      }
+
+      const persona = getChipText('personaChips', '早八打工人');
+      const tone = getChipText('toneChips', '真诚分享');
+      const length = document.getElementById('lengthSelect').value;
+      const extra = document.getElementById('extraInput').value.trim();
+
+      addMsg('user', '帮我写一篇「' + topic + '」的小红书笔记\n人群：' + persona + '\n语气：' + tone + '\n篇幅：' + length + (extra ? '\n补充：' + extra : ''));
+      showThinking('正在拆解卖点并组织表达');
+
+      setTimeout(function () {
+        removeThinking();
+        const note = buildNote();
+        applyNote(note, 'AI 初稿');
+        addMsg('assistant', '初稿写好了，标题、正文和标签已经同步到右侧预览。\n\n标题：' + note.title + '\n\n我把结构压成「结论 → 3 个使用细节 → 适合人群 → 互动结尾」，你可以直接改，也可以让我继续调。');
+        toast('已生成一版笔记，可在右侧编辑');
+      }, 1250);
+    }
+
+    function regenerate() {
+      if (currentMode === 'rewrite') {
+        rewriteStart(true);
+        return;
+      }
+      if (!generated) {
+        generateFromForm();
+        return;
+      }
+      variant += 1;
+      const note = buildNote();
+      applyNote(note, 'AI 改写版');
+      addMsg('assistant', '换了一版新的标题和开篇，右侧已更新：\n「' + note.title + '」\n想更抓人还是更克制，告诉我方向就行。');
+      toast('已重新生成一版笔记');
+    }
+
+    function saveDraft() {
+      document.getElementById('previewStatus').textContent = '草稿已保存';
+      toast('已保存为草稿，可在发布管理中继续编辑');
+    }
+
+    function openFinal() {
+      updateCounts();
+      document.getElementById('finalTitle').textContent = document.getElementById('noteTitle').value || '未命名笔记';
+      document.getElementById('finalWords').textContent = document.getElementById('noteBody').value.length;
+      document.getElementById('finalTags').textContent = currentTags.length;
+      const modal = document.getElementById('finalModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeFinal() {
+      const modal = document.getElementById('finalModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function applyChatAction(text) {
+      const titleInput = document.getElementById('noteTitle');
+      const bodyInput = document.getElementById('noteBody');
+
+      if (text.indexOf('标题') !== -1) {
+        titleInput.value = '别再乱买通勤包了｜这 5 个细节才决定好不好用'.slice(0, 20);
+        updateCounts();
+        document.getElementById('previewStatus').textContent = '标题已更新 · 待复核';
+      }
+      if (text.indexOf('压缩') !== -1 || text.indexOf('字') !== -1) {
+        const compact = bodyInput.value.split('\n').slice(0, 8).join('\n');
+        bodyInput.value = compact + '\n\n（已按 300 字目标压缩，可继续微调）';
+        updateCounts();
+        document.getElementById('previewStatus').textContent = '正文已压缩';
+      }
+      if (text.indexOf('标签') !== -1) {
+        const extraTags = ['早八通勤', '轻量出行', '通勤好物', '包包分享', '打工人日常'];
+        extraTags.forEach(function (tag) {
+          if (currentTags.indexOf(tag) === -1 && currentTags.length < 10) {
+            currentTags.push(tag);
+          }
+        });
+        renderTags(currentTags);
+        document.getElementById('previewStatus').textContent = '标签已补充';
+      }
+      if (text.indexOf('开篇') !== -1 || text.indexOf('钩子') !== -1) {
+        bodyInput.value = '「连续背了 21 天，我才发现通勤包最该看的不是容量，而是拿东西顺不顺手。」\n\n' + bodyInput.value.replace(/^「[^\n]*」\n\n/, '');
+        updateCounts();
+        document.getElementById('previewStatus').textContent = '开篇已替换';
+      }
+    }
+
+    function sendQuick(text) {
+      const input = document.getElementById('chatInput');
+      input.value = text;
+      sendMessage();
+    }
+
+    function replyFor(text) {
+      if (text.indexOf('标题') !== -1) {
+        return '给你三个更抓人的方向：\n1. 数字 + 结果：用了 3 周，我把通勤包减到 5 件\n2. 反差 + 结论：别再买大包了，能装不等于好用\n3. 身份代入：早八人请进，这只包让我多睡 10 分钟\n想用哪一个？我可以直接替换到右侧标题。';
+      }
+      if (text.indexOf('标签') !== -1) {
+        return '按「人群 + 场景 + 品类」补了 5 个标签：\n#早八通勤 #通勤好物 #包包分享 #打工人日常 #轻量出行\n建议总数控制在 6-8 个，太多会分散推荐方向。';
+      }
+      if (text.indexOf('字') !== -1 || text.indexOf('压缩') !== -1) {
+        return '已把正文压缩到约 300 字：保留开篇结论、3 个使用细节和结尾互动，删掉重复的感受描述。\n你可以直接在右侧继续删改，我也可以再给一个更短的版本。';
+      }
+      if (text.indexOf('开篇') !== -1 || text.indexOf('钩子') !== -1) {
+        return '换一个更具体的开篇钩子：\n「连续背了 21 天，我才发现通勤包最该看的不是容量，而是拿东西顺不顺手。」\n它比“先说结论”更有画面感，也更容易引出后面的实测细节。';
+      }
+      if (text.indexOf('价格') !== -1) {
+        return '可以，但建议弱化具体数字，改成“预算区间 + 使用频率”的表达，更符合分享语境，也能减少比价带来的争议。';
+      }
+      return '收到。我建议先把这篇补齐三个信息：「具体使用场景」「一个反常识细节」「明确适合人群」。\n你也可以直接告诉我想调整标题、正文长度还是标签，我来改到右侧预览。';
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const value = input.value.trim();
+      if (!value) {
+        toast('先输入想追问的内容');
+        return;
+      }
+      addMsg('user', value);
+      input.value = '';
+      input.style.height = 'auto';
+      showThinking('正在理解你的要求');
+      setTimeout(function () {
+        removeThinking();
+        addMsg('assistant', replyFor(value));
+        applyChatAction(value);
+      }, 950);
+    }
+
+    function setSourceTab(tab) {
+      ['pick', 'paste', 'keyword'].forEach(function (key) {
+        document.getElementById('source' + key.charAt(0).toUpperCase() + key.slice(1)).classList.toggle('hidden', key !== tab);
+      });
+      document.querySelectorAll('[data-source-tab]').forEach(function (btn) {
+        const active = btn.dataset.sourceTab === tab;
+        btn.className = active
+          ? 'flex-1 rounded-md bg-white px-2 py-1.5 text-[11px] font-semibold text-brand-600 shadow-sm'
+          : 'flex-1 rounded-md px-2 py-1.5 text-[11px] font-medium text-slate-500';
+      });
+    }
+
+    function selectRef(index, btn) {
+      selectedRef = index;
+      document.querySelectorAll('[data-ref]').forEach(function (item) {
+        item.className = refOff;
+      });
+      btn.className = refOn;
+    }
+
+    function analyzeStructure() {
+      let sourceTitle = '';
+      if (!document.getElementById('sourcePick').classList.contains('hidden') && refNotes[selectedRef]) {
+        sourceTitle = refNotes[selectedRef].title;
+      }
+      if (!document.getElementById('sourcePaste').classList.contains('hidden')) {
+        const pasted = document.getElementById('refPaste').value.trim();
+        sourceTitle = pasted ? pasted.split('\n')[0].slice(0, 28) : '';
+      }
+      if (!document.getElementById('sourceKeyword').classList.contains('hidden')) {
+        const keyword = document.getElementById('refKeyword').value.trim();
+        sourceTitle = keyword ? '关键词「' + keyword + '」匹配到的热门结构' : '';
+      }
+      if (!sourceTitle) {
+        toast('先选择或粘贴一条参考笔记');
+        return;
+      }
+      const card = document.getElementById('analysisCard');
+      card.classList.remove('hidden');
+      document.getElementById('analysisTitle').textContent = sourceTitle;
+      toast('结构解析完成，共 5 个要素');
+    }
+
+    function buildRewriteNote() {
+      const base = refNotes[selectedRef] || refNotes[1];
+      const angle = getChipText('angleChips', '换人群');
+      const strength = Number(document.getElementById('rewriteRange').value);
+      const topic = document.getElementById('refKeyword').value.trim();
+      const pickedTitle = !document.getElementById('sourcePaste').classList.contains('hidden')
+        ? document.getElementById('refPaste').value.trim().split('\n')[0]
+        : '';
+
+      let title = base.noteTitle;
+      if (topic) {
+        title = '关于' + topic + '，我换了个角度重新写';
+      }
+      if (pickedTitle) {
+        title = '换一种说法｜' + pickedTitle.slice(0, 14);
+      }
+
+      const body = '✨ 先说一个反常识的点：真正好用的，往往不是最显眼的那一个。\n\n'
+        + '这次参考的结构是「先抛结论，再用三段经历证明，最后把问题抛回评论区」。我保留了节奏，把表达换成了第一人称的日常体验。\n\n'
+        + '① 场景：早八出门，拿得到比装得多更重要。\n'
+        + '② 细节：前袋放钥匙和工牌，过安检不用翻包。\n'
+        + '③ 感受：连续用了一周，肩膀没有明显负担。\n\n'
+        + '改写角度：' + angle + '；改写力度：' + (strength >= 80 ? '偏原创' : strength >= 50 ? '中度改写' : '轻度参考') + '。\n\n'
+        + '如果你也遇到过“买回来才发现不好用”的东西，评论区聊聊，我整理成下一条避坑清单～';
+
+      return {
+        title: title,
+        body: body,
+        tags: base.tags.slice(0, 6)
+      };
+    }
+
+    function rewriteStart(silentUser) {
+      const pickVisible = !document.getElementById('sourcePick').classList.contains('hidden');
+      const pasteVisible = !document.getElementById('sourcePaste').classList.contains('hidden');
+      const keywordVisible = !document.getElementById('sourceKeyword').classList.contains('hidden');
+      let source = '';
+
+      if (pickVisible) {
+        source = refNotes[selectedRef] ? refNotes[selectedRef].title : '';
+      } else if (pasteVisible) {
+        source = document.getElementById('refPaste').value.trim();
+      } else if (keywordVisible) {
+        source = document.getElementById('refKeyword').value.trim();
+      }
+
+      if (!source) {
+        toast('先选择、粘贴或输入一条参考内容');
+        return;
+      }
+
+      if (!silentUser) {
+        addMsg('user', '参考「' + source.slice(0, 26) + '」改写成我自己的表达');
+      }
+      showThinking('正在拆解结构并重写');
+
+      setTimeout(function () {
+        removeThinking();
+        const note = buildRewriteNote();
+        applyNote(note, '仿写初稿');
+        addMsg('assistant', '改写完成。保留的是爆款的节奏和分段，换掉的是具体表达和案例。\n\n标题：' + note.title + '\n已同步到右侧，建议再补一句你自己的真实使用细节，原创度会更高。');
+        toast('已完成改写，右侧可继续编辑');
+      }, 1300);
+    }
+
+    function updateRewriteLabel(value) {
+      const label = Number(value) >= 80 ? '大幅改写' : Number(value) >= 50 ? '中度改写' : '轻度参考';
+      document.getElementById('rewriteLabel').textContent = label;
+    }
+
+    function initChatInput() {
+      const chatInput = document.getElementById('chatInput');
+      chatInput.addEventListener('input', function () {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 96) + 'px';
+      });
+      chatInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+      document.getElementById('tagInput').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          addTag();
+        }
+      });
+      document.getElementById('noteTitle').addEventListener('input', updateCounts);
+      document.getElementById('noteBody').addEventListener('input', updateCounts);
+      document.getElementById('finalModal').addEventListener('click', function (event) {
+        if (event.target === this) closeFinal();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeFinal();
+      });
+    }
+
+    function init() {
+      initChatInput();
+      goStep(1);
+
+      const params = new URLSearchParams(window.location.search);
+      const wantsRewrite = params.get('mode') === 'rewrite' || Boolean(params.get('ref'));
+      setMode(wantsRewrite ? 'rewrite' : 'original');
+
+      const topicParam = params.get('topic');
+      if (topicParam) {
+        document.getElementById('topicInput').value = topicParam;
+        addMsg('assistant', '看到你想写「' + topicParam + '」，我已经填进选品输入。\n补齐人群和语气，或者直接点「生成笔记」，我就开始写。');
+      }
+
+      const refParam = params.get('ref');
+      if (refParam && refNotes[refParam]) {
+        const refButton = document.querySelector('[data-ref="' + refParam + '"]');
+        if (refButton) selectRef(Number(refParam), refButton);
+        analyzeStructure();
+        const ref = refNotes[refParam];
+        applyNote({
+          title: ref.noteTitle,
+          body: ref.body,
+          tags: ref.tags
+        }, '参考已带入');
+        addMsg('assistant', '已从话题追踪带入「' + ref.title + '」并完成结构解析。\n右侧只是参考结构下的示例初稿，点「开始改写」会按你选的力度重新生成。');
+      }
+
+      const assetParam = params.get('asset');
+      if (assetParam) {
+        toast('已带入素材：' + assetParam);
+      }
+
+      if (!refNotes[selectedRef]) selectedRef = 1;
+
+      const preset = {
+        title: '早八人请进｜这只通勤包真的能装',
+        body: '✨ 先说结论：轻量通勤托特包是我最近使用频率最高的一只包。\n\n👜 ① 容量比看上去更能装\n13 寸电脑、折叠伞、水杯和化妆包都能放下，内袋分区也很清楚。\n\n🪶 ② 自重控制得不错\n装满之后肩带压力可以接受，通勤 40 分钟没有明显勒肩。\n\n🔍 ③ 细节决定使用频率\n拉链顺滑、底部有支撑，放在地铁座位上不会软塌。\n\n适合人群：早八打工人，想要一只通勤和周末都能用的包。\n\n以上都是我自己用下来的真实感受，有不同体验也欢迎在评论区聊聊～',
+        tags: ['通勤穿搭', '包包分享', '打工人日常', '通勤好物', '一包多背', '轻量出行']
+      };
+
+      if (!refParam) {
+        applyNote(preset, 'AI 初稿');
+        generated = false;
+      }
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', function () {
+      if (currentStep < 3) {
+        goStep(currentStep + 1);
+      } else {
+        generateFromForm();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
