@@ -232,14 +232,19 @@ export function GalaxyCanvas({
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const prevWidth = width;
+      const prevHeight = height;
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+      // 手机滚动时地址栏收起 / 展开只会改变高度：这时保留原有星星，否则每次都会整屏重排闪一下
+      const heightOnly =
+        stars.length > 0 && width === prevWidth && Math.abs(height - prevHeight) < 160;
       const count = Math.min(520, Math.round((width * height) / 3600));
-      stars = Array.from({ length: count }, () => {
+      if (!heightOnly) stars = Array.from({ length: count }, () => {
         const layer = Math.random() < 0.5 ? 0 : Math.random() < 0.65 ? 1 : 2;
         const glint = layer === 2 && Math.random() < 0.16;
         return {
@@ -265,8 +270,8 @@ export function GalaxyCanvas({
 
     const drawGalaxy = (t: number, scrollY: number) => {
       if (!galaxy) return;
-      // 窄屏下内容是单列，把星系挪到右上角并调暗，避免压住正文
-      const narrow = width < 768;
+      // 宽度不足 1024 时页面是单列布局，把星系挪到右上角并调暗，避免压住正文
+      const narrow = width < 1024;
       const strength = clamp(1 - scrollY / (height * 1.1), 0.16, 1) * (narrow ? 0.75 : 1);
       const R = clamp(Math.min(width, height * 1.35) * 0.58, 230, 640) * galaxyScale;
       const cx = width * (narrow ? 0.8 : galaxyX) - pointer.x * 26;

@@ -15,9 +15,10 @@ export function SpaceBackdrop({ galaxy = true, galaxyX, galaxyY, galaxyScale }: 
     <>
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-10%,rgba(111,92,246,0.26),transparent_70%)]" />
-        <div className="absolute -left-40 top-1/4 h-[520px] w-[520px] animate-drift rounded-full bg-brand-600/20 blur-[120px]" />
-        <div className="absolute -right-40 top-2/3 h-[480px] w-[480px] animate-drift rounded-full bg-cyan-500/12 blur-[120px] [animation-delay:-9s] [animation-direction:alternate-reverse]" />
-        <div className="absolute bottom-[-20%] left-1/3 h-[420px] w-[620px] animate-drift rounded-full bg-fuchsia-500/8 blur-[130px] [animation-delay:-16s]" />
+        {/* 星云用径向渐变画，不用 filter: blur —— 大半径模糊叠加位移动画会在部分显卡上渲染出白色色块 */}
+        <div className="absolute -left-[22rem] top-[8%] h-[62rem] w-[62rem] animate-drift bg-[radial-gradient(closest-side,rgba(90,69,224,0.20),rgba(90,69,224,0.07)_55%,transparent)]" />
+        <div className="absolute -right-[22rem] top-[42%] h-[58rem] w-[58rem] animate-drift bg-[radial-gradient(closest-side,rgba(6,182,212,0.11),rgba(6,182,212,0.04)_55%,transparent)] [animation-delay:-9s] [animation-direction:alternate-reverse]" />
+        <div className="absolute -bottom-[26rem] left-[18%] h-[52rem] w-[72rem] animate-drift bg-[radial-gradient(closest-side,rgba(217,70,239,0.08),rgba(217,70,239,0.03)_55%,transparent)] [animation-delay:-16s]" />
         <GalaxyCanvas
           className="absolute inset-0"
           galaxyScale={galaxyScale}
