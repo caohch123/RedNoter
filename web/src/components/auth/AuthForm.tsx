@@ -104,7 +104,7 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
     );
 
   return (
-    <div className="glass rounded-3xl p-6 shadow-soft sm:p-8">
+    <div className="glass aurora-border relative rounded-3xl p-6 shadow-soft sm:p-8">
       <div aria-label="登录或注册" className="flex rounded-xl bg-white/5 p-1" role="tablist">
         {(["login", "register"] as const).map((item) => (
           <button

@@ -11,7 +11,7 @@ import { SpaceBackdrop } from "@/components/ui/SpaceBackdrop";
 export default function HomePage() {
   return (
     <div className="relative isolate flex min-h-screen flex-col">
-      <SpaceBackdrop />
+      <SpaceBackdrop galaxyScale={1.25} galaxyX={0.5} galaxyY={0.35} />
       <SiteHeader />
       <main className="flex-1">
         <Hero />

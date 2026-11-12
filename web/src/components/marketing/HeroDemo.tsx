@@ -24,7 +24,7 @@ export function HeroDemo() {
   return (
     <div className="relative">
       <div className="absolute -inset-6 -z-10 rounded-[40px] bg-gradient-to-br from-brand-500/30 via-transparent to-cyan-400/20 blur-3xl" />
-      <div className="glass relative overflow-hidden rounded-[28px] p-4 shadow-soft sm:p-5">
+      <div className="glass aurora-border relative overflow-hidden rounded-[28px] p-4 shadow-soft sm:p-5">
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-60" />
 
         <div className="relative flex items-center justify-between rounded-2xl border border-white/10 bg-space-900/80 px-3.5 py-2.5">

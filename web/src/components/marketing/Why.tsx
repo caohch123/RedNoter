@@ -17,7 +17,7 @@ export function Why() {
   return (
     <section className="mx-auto max-w-[1240px] scroll-mt-20 px-6 py-16 lg:py-24" id="why">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
+        <div data-reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-star-300">
             为什么是摘星
           </p>
@@ -37,8 +37,13 @@ export function Why() {
           </ul>
         </div>
         <dl className="grid grid-cols-2 gap-3">
-          {STATS.map((stat) => (
-            <div key={stat.label} className="glass rounded-2xl p-5">
+          {STATS.map((stat, index) => (
+            <div
+              key={stat.label}
+              className="glass spotlight rounded-2xl p-5"
+              data-reveal
+              data-reveal-delay={index * 90}
+            >
               <dd className="text-4xl font-bold tracking-tight text-white">
                 {stat.value}
                 <span className="ml-1.5 text-sm font-semibold text-brand-200">

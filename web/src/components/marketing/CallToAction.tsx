@@ -8,7 +8,10 @@ const INSIDE = ["AI 创作", "话题追踪", "素材库", "发布管理"];
 export function CallToAction() {
   return (
     <section className="mx-auto max-w-[1240px] px-6 pb-16 lg:pb-24">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-700/50 via-space-800 to-space-900 px-7 py-10 sm:px-10 lg:px-12 lg:py-14">
+      <div
+        className="aurora-border relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-700/50 via-space-800/80 to-space-900/80 px-7 py-10 sm:px-10 lg:px-12 lg:py-14"
+        data-reveal
+      >
         <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-brand-400/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-cyan-400/15 blur-3xl" />
         <div className="relative grid gap-9 lg:grid-cols-[1.3fr_1fr] lg:items-center">

@@ -40,6 +40,8 @@
   --animate-fade-in: fadeIn 0.35s ease-out both;
   --animate-float: float 7s ease-in-out infinite;
   --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-drift: drift 26s ease-in-out infinite alternate;
+  --animate-travel: travel 4.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   @keyframes fadeIn {
     from {
@@ -58,6 +60,28 @@
     }
     50% {
       transform: translateY(-8px);
+    }
+  }
+  @keyframes drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(70px, -50px, 0) scale(1.18);
+    }
+  }
+  @keyframes travel {
+    0% {
+      left: -15%;
+      opacity: 0;
+    }
+    12%,
+    88% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
     }
   }
   @keyframes twinkle {
@@ -101,10 +125,25 @@ body {
 
 /* 标题里的星光渐变字 */
 @utility text-starlight {
-  background: linear-gradient(100deg, #fff4d6 0%, #f9d77e 35%, #ada0ff 100%);
+  background: linear-gradient(
+    100deg,
+    #fff4d6 0%,
+    #f9d77e 25%,
+    #ada0ff 50%,
+    #f9d77e 75%,
+    #fff4d6 100%
+  );
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: starlight 7s linear infinite;
+}
+
+@keyframes starlight {
+  to {
+    background-position: -200% 0;
+  }
 }
 
 /* 星图网格（对应原型的 grid-bg） */
@@ -119,6 +158,128 @@ body {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* ---------- 动效组件 ---------- */
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@layer components {
+  /* 流光边框：一束星光沿着边框绕行 */
+  .aurora-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--angle),
+      transparent 0%,
+      transparent 52%,
+      #8b7bff 68%,
+      #fde9b0 80%,
+      #7fc0ff 90%,
+      transparent 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: spin-angle 7s linear infinite;
+    pointer-events: none;
+  }
+
+  /* 卡片聚光：光斑和描边跟着鼠标走（坐标由 InteractionEffects 写入） */
+  .spotlight {
+    position: relative;
+  }
+  .spotlight::before,
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .spotlight::after {
+    background: radial-gradient(
+      380px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(173, 160, 255, 0.14),
+      transparent 65%
+    );
+  }
+  .spotlight::before {
+    z-index: 1;
+    padding: 1px;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(253, 233, 176, 0.85),
+      rgba(173, 160, 255, 0.35) 45%,
+      transparent 70%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  /* 主按钮悬停时扫过一道光 */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    transform: skewX(-20deg);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.7),
+      transparent
+    );
+    pointer-events: none;
+  }
+  .btn-shine:hover::after {
+    left: 125%;
+    transition: left 0.7s ease;
+  }
+
+  /* 滚动浮现：只有 InteractionEffects 启动后（html.reveal-on）才会先隐藏 */
+  html.reveal-on [data-reveal] {
+    opacity: 0;
+    transform: translateY(26px) scale(0.985);
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  html.reveal-on [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
   }
 }
 

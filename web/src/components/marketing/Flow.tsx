@@ -35,7 +35,7 @@ export function Flow() {
       id="flow"
     >
       <div className="mx-auto max-w-[1240px] px-6 py-16 lg:py-24">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-2xl text-center" data-reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-star-300">
             创作流程
           </p>
@@ -51,18 +51,27 @@ export function Flow() {
           {/* 星座连线 */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-2 hidden border-t border-dashed border-brand-300/40 lg:block"
-          />
+            className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-[5px] hidden h-[7px] overflow-hidden lg:block"
+          >
+            <span className="absolute inset-x-0 top-[3px] border-t border-dashed border-brand-300/40" />
+            {/* 沿着连线划过的一束星光 */}
+            <span className="absolute top-[2px] h-[3px] w-28 animate-travel rounded-full bg-gradient-to-r from-transparent via-star-200 to-transparent" />
+          </div>
         <ol className="relative grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step, index) => (
-            <li key={step.title} className="relative flex flex-col items-center">
+            <li
+              key={step.title}
+              className="relative flex flex-col items-center"
+              data-reveal
+              data-reveal-delay={index * 130}
+            >
               <span
                 className="relative z-10 animate-twinkle text-star-300 drop-shadow-[0_0_10px_rgba(249,215,126,0.9)]"
                 style={{ animationDelay: `${index * 0.6}s` }}
               >
                 <StarMark size={18} />
               </span>
-              <div className="glass mt-5 w-full flex-1 rounded-2xl p-5">
+              <div className="glass spotlight mt-5 w-full flex-1 rounded-2xl p-5">
                 <div className="flex items-center justify-between">
                   <span className={`grid h-9 w-9 place-items-center rounded-xl ${step.tint}`}>
                     <step.icon size={19} />

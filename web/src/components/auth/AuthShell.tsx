@@ -29,7 +29,7 @@ const VALUES = [
 export function AuthShell({ mode }: { mode: AuthMode }) {
   return (
     <div className="relative isolate grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
-      <SpaceBackdrop />
+      <SpaceBackdrop galaxyScale={1.1} galaxyX={0.5} galaxyY={0.52} />
 
       {/* 品牌侧 */}
       <aside className="relative hidden overflow-hidden border-r border-white/10 p-10 lg:flex lg:flex-col lg:justify-between xl:p-14">
@@ -46,7 +46,7 @@ export function AuthShell({ mode }: { mode: AuthMode }) {
           </p>
           <ul className="mt-8 space-y-3">
             {VALUES.map((item) => (
-              <li key={item.title} className="glass flex items-start gap-3 rounded-2xl px-4 py-3">
+              <li key={item.title} className="glass spotlight flex items-start gap-3 rounded-2xl px-4 py-3">
                 <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl ${item.tint}`}>
                   <item.icon size={16} />
                 </span>
