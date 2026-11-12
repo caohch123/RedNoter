@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/*
+ * 摘星 · 银河主题
+ * 沿用原型里的 brand-* / shadow-soft 等类名，只把取值换成银河配色，
+ * 这样从原型搬过来的结构可以直接复用。
+ */
+@theme {
+  /* 深空背景 */
+  --color-space-950: #05060f;
+  --color-space-900: #0a0c1d;
+  --color-space-800: #11142b;
+  --color-space-700: #1a1e3d;
+  --color-space-600: #262b55;
+
+  /* 星辉紫（主色） */
+  --color-brand-50: #f3f1ff;
+  --color-brand-100: #e7e3ff;
+  --color-brand-200: #cfc7ff;
+  --color-brand-300: #ada0ff;
+  --color-brand-400: #8b7bff;
+  --color-brand-500: #6f5cf6;
+  --color-brand-600: #5a45e0;
+  --color-brand-700: #4835b8;
+
+  /* 星光金（点缀） */
+  --color-star-100: #fff4d6;
+  --color-star-200: #fde9b0;
+  --color-star-300: #f9d77e;
+  --color-star-400: #f2c14e;
+  --color-star-500: #e0a82e;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --shadow-soft: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 0 1px rgba(139, 123, 255, 0.25),
+    0 18px 50px -18px rgba(111, 92, 246, 0.55);
+
+  --animate-fade-in: fadeIn 0.35s ease-out both;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.85);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-space-950);
+  color: #e2e8f0;
+}
+
+::selection {
+  background: rgba(139, 123, 255, 0.45);
+  color: #fff;
+}
+
+/* 玻璃卡片：深空上的半透明面板 */
+@utility glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.025)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+}
+
+/* 标题里的星光渐变字 */
+@utility text-starlight {
+  background: linear-gradient(100deg, #fff4d6 0%, #f9d77e 35%, #ada0ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 星图网格（对应原型的 grid-bg） */
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

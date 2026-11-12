@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>发布管理 · 小红笔 AI</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#FFF1F3',
+              100: '#FFE2E7',
+              200: '#FFC7D1',
+              300: '#FF9BAC',
+              400: '#FF6B85',
+              500: '#F44464',
+              600: '#DC2749',
+              700: '#B91C3F'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 40px -24px rgba(15,23,42,0.25)'
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .kanban-flash { animation: flash 1s ease-out; }
+    @keyframes flash {
+      0% { box-shadow: 0 0 0 0 rgba(244, 68, 100, 0.35); }
+      100% { box-shadow: 0 0 0 10px rgba(244, 68, 100, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<!-- 顶部导航 -->
+<header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+<div class="mx-auto flex h-16 max-w-[1240px] items-center justify-between gap-4 px-5 sm:px-6">
+<a class="flex shrink-0 items-center gap-2.5" href="home.html">
+<span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/30">
+<iconify-icon icon="solar:pen-new-square-bold" width="20"></iconify-icon>
+</span>
+<span class="flex items-baseline gap-2">
+<span class="text-[17px] font-bold tracking-tight text-slate-900">小红笔 AI</span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">创作台</span>
+</span>
+</a>
+<nav class="hidden items-center gap-1 lg:flex">
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="home.html">首页</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="create.html">AI 创作</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="topics.html">话题追踪</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="assets.html">素材库</a>
+<a class="rounded-lg bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand-600" href="publish.html">发布管理</a>
+</nav>
+<div class="flex shrink-0 items-center gap-2 sm:gap-3">
+<a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="login.html">登录</a>
+<a class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+          开始创作
+          <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+</a>
+</div>
+</div>
+<div class="no-scrollbar flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 lg:hidden">
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="home.html">首页</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="create.html">AI 创作</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="topics.html">话题追踪</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="assets.html">素材库</a>
+<a class="shrink-0 rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-600" href="publish.html">发布管理</a>
+</div>
+</header>
+<main class="mx-auto max-w-[1240px] px-5 pb-16 pt-8 sm:px-6">
+<!-- 页头 -->
+<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-500">Publish Board</p>
+<h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">发布管理</h1>
+<p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+          草稿、待发布、已发布放在同一块看板上。复制、撤回、预约发布都在卡片上完成，进度一眼看清。
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<a class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900" href="create.html">
+<iconify-icon icon="solar:magic-stick-3-linear" width="15"></iconify-icon>
+          去创作
+        </a>
+<a class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+<iconify-icon icon="solar:add-circle-bold" width="15"></iconify-icon>
+          新建笔记
+        </a>
+</div>
+</div>
+<!-- 概览统计 -->
+<section class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500">
+<iconify-icon icon="solar:document-add-linear" width="16"></iconify-icon>
+</span>
+<span class="text-[10px] font-medium text-slate-400">继续打磨</span>
+</div>
+<p class="mt-3 text-2xl font-bold tracking-tight text-slate-900"><span id="statDraft">4</span><span class="ml-1 text-xs font-medium text-slate-400">篇草稿</span></p>
+<p class="mt-1 text-[10px] text-slate-400">最近编辑：昨天 21:40</p>
+</div>
+<div class="rounded-2xl border border-brand-100 bg-brand-50/40 p-4 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-white text-brand-500">
+<iconify-icon icon="solar:calendar-clock-linear" width="16"></iconify-icon>
+</span>
+<span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-brand-500">2 篇已预约</span>
+</div>
+<p class="mt-3 text-2xl font-bold tracking-tight text-slate-900"><span id="statScheduled">3</span><span class="ml-1 text-xs font-medium text-slate-400">篇待发布</span></p>
+<p class="mt-1 text-[10px] text-slate-400">已预约时间可在卡片上调整</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-500">
+<iconify-icon icon="solar:check-circle-linear" width="16"></iconify-icon>
+</span>
+<span class="text-[10px] font-medium text-emerald-600">状态正常</span>
+</div>
+<p class="mt-3 text-2xl font-bold tracking-tight text-slate-900"><span id="statPublished">3</span><span class="ml-1 text-xs font-medium text-slate-400">篇已发布</span></p>
+<p class="mt-1 text-[10px] text-slate-400">本周互动在持续更新</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-sky-50 text-sky-500">
+<iconify-icon icon="solar:chart-2-linear" width="16"></iconify-icon>
+</span>
+<span class="text-[10px] font-medium text-slate-400">演示数据</span>
+</div>
+<p class="mt-3 text-2xl font-bold tracking-tight text-slate-900">12<span class="ml-1 text-xs font-medium text-slate-400">篇本月发布</span></p>
+<p class="mt-1 text-[10px] text-slate-400">较上月节奏更稳定</p>
+</div>
+</section>
+<!-- 看板 -->
+<section class="mt-5 grid gap-4 lg:grid-cols-3">
+<!-- 草稿 -->
+<div class="flex flex-col rounded-2xl border border-slate-200 bg-slate-100/60 p-3">
+<div class="flex items-center justify-between px-1 pb-2.5">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-slate-400"></span>
+<h2 class="text-sm font-semibold text-slate-700">草稿</h2>
+<span class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-500" data-count="draft">4</span>
+</div>
+<a aria-label="新建草稿" class="grid h-7 w-7 place-items-center rounded-lg text-slate-400 transition hover:bg-white hover:text-brand-600" href="create.html">
+<iconify-icon icon="solar:add-circle-linear" width="17"></iconify-icon>
+</a>
+</div>
+<div class="flex-1 space-y-2.5" data-cards="draft">
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="draft">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-brand-100 to-orange-100">
+<span class="absolute inset-0 grid place-items-center text-brand-400"><iconify-icon icon="solar:bag-4-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">通勤包清单｜一周实测记录</p>
+<span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500" data-badge="">草稿</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">更新于 昨天 21:40 · 486 字</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#通勤好物</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#包包分享</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="draft">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-indigo-100">
+<span class="absolute inset-0 grid place-items-center text-indigo-400"><iconify-icon icon="solar:monitor-smartphone-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">工位改造｜500 元提升专注力</p>
+<span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500" data-badge="">草稿</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">更新于 周一 10:12 · 612 字</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#桌面改造</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#工位好物</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="draft">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-teal-100 to-cyan-100">
+<span class="absolute inset-0 grid place-items-center text-teal-400"><iconify-icon icon="solar:map-point-wave-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">周末 citywalk 路线初稿</p>
+<span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500" data-badge="">草稿</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">更新于 周日 18:05 · 320 字</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#citywalk</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#周末去哪儿</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="draft">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-emerald-100 to-teal-50">
+<span class="absolute inset-0 grid place-items-center text-emerald-400"><iconify-icon icon="solar:test-tube-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">换季护肤空瓶记录</p>
+<span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500" data-badge="">草稿</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">更新于 11 月 6 日 · 278 字</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#敏感肌护肤</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#空瓶记</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<div class="hidden rounded-xl border border-dashed border-slate-300 bg-white/60 px-3 py-8 text-center text-[11px] text-slate-400" data-empty="draft">还没有草稿，去创作工作台开始一篇。</div>
+</div>
+</div>
+<!-- 待发布 -->
+<div class="flex flex-col rounded-2xl border border-brand-100 bg-brand-50/40 p-3">
+<div class="flex items-center justify-between px-1 pb-2.5">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-brand-500"></span>
+<h2 class="text-sm font-semibold text-slate-700">待发布</h2>
+<span class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-semibold text-brand-500" data-count="scheduled">3</span>
+</div>
+<a aria-label="新建待发布笔记" class="grid h-7 w-7 place-items-center rounded-lg text-brand-400 transition hover:bg-white hover:text-brand-600" href="create.html">
+<iconify-icon icon="solar:add-circle-linear" width="17"></iconify-icon>
+</a>
+</div>
+<div class="flex-1 space-y-2.5" data-cards="scheduled">
+<article class="rounded-xl border border-brand-100 bg-white p-3 shadow-sm transition hover:border-brand-300" data-card="" data-status="scheduled">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-sky-100 to-sky-50">
+<span class="absolute inset-0 grid place-items-center text-sky-400"><iconify-icon icon="solar:shirt-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">早八穿搭公式｜5 分钟出门</p>
+<span class="shrink-0 rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-medium text-brand-600" data-badge="">预约 今天 20:00</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">534 字 · 标签已检查</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#早八穿搭</span>
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#通勤穿搭</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-brand-100 bg-white p-3 shadow-sm transition hover:border-brand-300" data-card="" data-status="scheduled">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-amber-100 to-orange-50">
+<span class="absolute inset-0 grid place-items-center text-amber-400"><iconify-icon icon="solar:chef-hat-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">一周带饭清单｜成本 15 元</p>
+<span class="shrink-0 rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-medium text-brand-600" data-badge="">预约 明天 12:00</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">468 字 · 封面已选用便当图</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#一人食</span>
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#带饭日常</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-brand-100 bg-white p-3 shadow-sm transition hover:border-brand-300" data-card="" data-status="scheduled">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-brand-100 to-sky-50">
+<span class="absolute inset-0 grid place-items-center text-brand-400"><iconify-icon icon="solar:bed-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">12㎡ 卧室改造复盘</p>
+<span class="shrink-0 rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-medium text-brand-600" data-badge="">预约 11 月 13 日</span>
+</div>
+<p class="mt-1 text-[10px] text-slate-400">720 字 · 建议补充尺寸清单</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#租房改造</span>
+<span class="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] text-brand-500">#小户型收纳</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<div class="hidden rounded-xl border border-dashed border-slate-300 bg-white/60 px-3 py-8 text-center text-[11px] text-slate-400" data-empty="scheduled">暂无待发布内容，可从草稿提交或新建一篇。</div>
+</div>
+</div>
+<!-- 已发布 -->
+<div class="flex flex-col rounded-2xl border border-slate-200 bg-slate-100/60 p-3">
+<div class="flex items-center justify-between px-1 pb-2.5">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+<h2 class="text-sm font-semibold text-slate-700">已发布</h2>
+<span class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-500" data-count="published">3</span>
+</div>
+<span class="text-[10px] text-slate-400">近 7 天</span>
+</div>
+<div class="flex-1 space-y-2.5" data-cards="published">
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="published">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-brand-200 to-rose-100">
+<span class="absolute inset-0 grid place-items-center text-white"><iconify-icon icon="solar:bag-4-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">通勤包容量实测｜装下一天</p>
+<span class="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600" data-badge="">已发布</span>
+</div>
+<p class="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
+<span>2 小时前</span>
+<span class="inline-flex items-center gap-0.5 text-brand-500"><iconify-icon icon="solar:heart-bold" width="10"></iconify-icon>1,024</span>
+<span class="inline-flex items-center gap-0.5 text-sky-500"><iconify-icon icon="solar:bookmark-bold" width="10"></iconify-icon>386</span>
+</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#通勤穿搭</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#包包分享</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="published">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-sky-200 to-indigo-100">
+<span class="absolute inset-0 grid place-items-center text-white"><iconify-icon icon="solar:shirt-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">小个子通勤穿搭公式</p>
+<span class="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600" data-badge="">已发布</span>
+</div>
+<p class="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
+<span>3 天前</span>
+<span class="inline-flex items-center gap-0.5 text-brand-500"><iconify-icon icon="solar:heart-bold" width="10"></iconify-icon>864</span>
+<span class="inline-flex items-center gap-0.5 text-sky-500"><iconify-icon icon="solar:bookmark-bold" width="10"></iconify-icon>412</span>
+</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#小个子穿搭</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#通勤穿搭</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-brand-200" data-card="" data-status="published">
+<div class="flex gap-2.5">
+<div class="relative h-14 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-teal-200 to-cyan-100">
+<span class="absolute inset-0 grid place-items-center text-white"><iconify-icon icon="solar:map-point-wave-bold" width="20"></iconify-icon></span>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-start justify-between gap-2">
+<p class="line-clamp-2 text-xs font-semibold leading-5 text-slate-800">城市散步｜人少好拍的 6 个点</p>
+<span class="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600" data-badge="">已发布</span>
+</div>
+<p class="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
+<span>11 月 5 日</span>
+<span class="inline-flex items-center gap-0.5 text-brand-500"><iconify-icon icon="solar:heart-bold" width="10"></iconify-icon>2,310</span>
+<span class="inline-flex items-center gap-0.5 text-sky-500"><iconify-icon icon="solar:bookmark-bold" width="10"></iconify-icon>1,048</span>
+</p>
+</div>
+</div>
+<div class="mt-2 flex flex-wrap gap-1">
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#citywalk</span>
+<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">#城市漫游</span>
+</div>
+<div class="mt-2.5 flex items-center justify-end gap-1 border-t border-slate-100 pt-2" data-actions=""></div>
+</article>
+<div class="hidden rounded-xl border border-dashed border-slate-300 bg-white/60 px-3 py-8 text-center text-[11px] text-slate-400" data-empty="published">还没有已发布笔记，发布后会出现在这里。</div>
+</div>
+</div>
+</section>
+<div class="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+<p class="flex items-start gap-2 text-[11px] leading-5 text-slate-400">
+<iconify-icon class="mt-0.5 shrink-0" icon="solar:info-circle-linear" width="15"></iconify-icon>
+        看板操作为前端静态演示：状态流转、复制与撤回只在当前页面生效，不会真实发布到小红书。发布前请确认内容与图片授权。
+      </p>
+<a class="inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold text-brand-600 transition hover:text-brand-700" href="create.html">
+        继续创作一篇
+        <iconify-icon icon="solar:arrow-right-linear" width="13"></iconify-icon>
+</a>
+</div>
+</main>
+<div class="pointer-events-none fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2 rounded-xl bg-slate-900/95 px-4 py-2.5 text-xs font-medium text-white shadow-lg" id="toast"></div>
+<script>
+    const statusMeta = {
+      draft: { label: '草稿', badge: '草稿', message: '已撤回为草稿' },
+      scheduled: { label: '待发布', badge: '待确认时间', message: '已提交到待发布' },
+      published: { label: '已发布', badge: '已发布', message: '已标记为已发布（演示）' }
+    };
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(function () {
+        el.classList.add('hidden');
+      }, 2500);
+    }
+
+    function createButton(label, handler, primary) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.className = primary
+        ? 'rounded-md bg-brand-600 px-2 py-1 text-[10px] font-semibold text-white transition hover:bg-brand-700'
+        : 'rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600';
+      btn.addEventListener('click', handler);
+      return btn;
+    }
+
+    function renderCardActions(card, status) {
+      const actions = card.querySelector('[data-actions]');
+      actions.innerHTML = '';
+
+      const edit = document.createElement('a');
+      edit.href = 'create.html';
+      edit.textContent = '编辑';
+      edit.className = 'rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600';
+      actions.appendChild(edit);
+
+      if (status === 'draft') {
+        actions.appendChild(createButton('复制', function () {
+          duplicateCard(card);
+        }, false));
+        actions.appendChild(createButton('提交待发布', function () {
+          moveCard(card, 'scheduled');
+        }, true));
+      } else if (status === 'scheduled') {
+        actions.appendChild(createButton('立即发布', function () {
+          moveCard(card, 'published');
+        }, true));
+        actions.appendChild(createButton('定个时间', function () {
+          scheduleCard(card);
+        }, false));
+        actions.appendChild(createButton('撤回', function () {
+          moveCard(card, 'draft');
+        }, false));
+      } else {
+        actions.appendChild(createButton('数据', function () {
+          toast('数据面板为原型示意：可查看点赞、收藏与涨粉趋势');
+        }, false));
+        actions.appendChild(createButton('撤回', function () {
+          moveCard(card, 'draft');
+        }, false));
+      }
+    }
+
+    function refreshCounts() {
+      ['draft', 'scheduled', 'published'].forEach(function (status) {
+        const cards = document.querySelectorAll('[data-cards="' + status + '"] [data-card]');
+        const count = cards.length;
+        document.querySelectorAll('[data-count="' + status + '"]').forEach(function (el) {
+          el.textContent = String(count);
+        });
+        const statIds = { draft: 'statDraft', scheduled: 'statScheduled', published: 'statPublished' };
+        const stat = document.getElementById(statIds[status]);
+        if (stat) stat.textContent = String(count);
+        const empty = document.querySelector('[data-empty="' + status + '"]');
+        if (empty) empty.classList.toggle('hidden', count !== 0);
+      });
+    }
+
+    function moveCard(card, status) {
+      const target = document.querySelector('[data-cards="' + status + '"]');
+      if (!target) return;
+      const empty = target.querySelector('[data-empty]');
+      target.insertBefore(card, empty || null);
+      card.dataset.status = status;
+
+      const badge = card.querySelector('[data-badge]');
+      const nowLabel = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      if (badge) {
+        badge.textContent = status === 'published' ? '已发布 · 刚刚' : status === 'scheduled' ? '待发布 · 今天 ' + nowLabel : '草稿';
+        badge.className = status === 'published'
+          ? 'shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600'
+          : status === 'scheduled'
+            ? 'shrink-0 rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-medium text-brand-600'
+            : 'shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500';
+      }
+
+      const meta = card.querySelector('p.text-\\[10px\\]');
+      if (meta && meta.textContent.indexOf('更新于') !== -1) {
+        meta.textContent = '更新于 刚刚 · 内容已同步';
+      }
+
+      card.classList.remove('kanban-flash');
+      void card.offsetWidth;
+      card.classList.add('kanban-flash');
+
+      renderCardActions(card, status);
+      refreshCounts();
+      toast(statusMeta[status].message);
+    }
+
+    function duplicateCard(card) {
+      const clone = card.cloneNode(true);
+      clone.classList.remove('kanban-flash');
+      const title = clone.querySelector('p');
+      if (title) title.textContent = title.textContent + '（副本）';
+      const badge = clone.querySelector('[data-badge]');
+      if (badge) badge.textContent = '副本 · 草稿';
+      wrapActionsForClone(clone);
+      card.parentElement.insertBefore(clone, card.nextSibling);
+      refreshCounts();
+      toast('已复制一份草稿，可继续编辑');
+    }
+
+    function wrapActionsForClone(clone) {
+      const status = clone.dataset.status || 'draft';
+      renderCardActions(clone, status);
+    }
+
+    function scheduleCard(card) {
+      const badge = card.querySelector('[data-badge]');
+      if (badge) {
+        badge.textContent = '已预约 今天 20:00';
+        badge.className = 'shrink-0 rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-medium text-brand-600';
+      }
+      toast('已设置今天 20:00 定时发布（演示）');
+    }
+
+    function initBoard() {
+      document.querySelectorAll('[data-card]').forEach(function (card) {
+        renderCardActions(card, card.dataset.status || 'draft');
+      });
+      refreshCounts();
+    }
+
+    initBoard();
+  </script>
+</body>
+</html>

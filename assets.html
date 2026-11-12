@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>素材库 · 小红笔 AI</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#FFF1F3',
+              100: '#FFE2E7',
+              200: '#FFC7D1',
+              300: '#FF9BAC',
+              400: '#FF6B85',
+              500: '#F44464',
+              600: '#DC2749',
+              700: '#B91C3F'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 40px -24px rgba(15,23,42,0.25)'
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<!-- 顶部导航 -->
+<header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+<div class="mx-auto flex h-16 max-w-[1240px] items-center justify-between gap-4 px-5 sm:px-6">
+<a class="flex shrink-0 items-center gap-2.5" href="home.html">
+<span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/30">
+<iconify-icon icon="solar:pen-new-square-bold" width="20"></iconify-icon>
+</span>
+<span class="flex items-baseline gap-2">
+<span class="text-[17px] font-bold tracking-tight text-slate-900">小红笔 AI</span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">创作台</span>
+</span>
+</a>
+<nav class="hidden items-center gap-1 lg:flex">
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="home.html">首页</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="create.html">AI 创作</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="topics.html">话题追踪</a>
+<a class="rounded-lg bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand-600" href="assets.html">素材库</a>
+<a class="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="publish.html">发布管理</a>
+</nav>
+<div class="flex shrink-0 items-center gap-2 sm:gap-3">
+<a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="login.html">登录</a>
+<a class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+          开始创作
+          <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+</a>
+</div>
+</div>
+<div class="no-scrollbar flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 lg:hidden">
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="home.html">首页</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="create.html">AI 创作</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="topics.html">话题追踪</a>
+<a class="shrink-0 rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-600" href="assets.html">素材库</a>
+<a class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600" href="publish.html">发布管理</a>
+</div>
+</header>
+<main class="mx-auto max-w-[1240px] px-5 pb-16 pt-8 sm:px-6">
+<!-- 页头 -->
+<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-500">Asset Library</p>
+<h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">素材库</h1>
+<p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+          平时看到的图、好用的句子、起得顺的标题，统一收在这里。创作时一键带入，不让灵感留在聊天记录里。
+        </p>
+</div>
+<a class="inline-flex w-fit items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700" href="create.html">
+<iconify-icon icon="solar:magic-stick-3-bold" width="15"></iconify-icon>
+        带着素材去创作
+      </a>
+</div>
+<div class="mt-6 grid gap-5 lg:grid-cols-[240px_1fr]">
+<!-- 分类侧栏 -->
+<aside class="space-y-3">
+<div class="rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm lg:sticky lg:top-24">
+<p class="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">素材分组</p>
+<div class="mt-1 space-y-1">
+<button class="flex w-full items-center justify-between rounded-xl bg-brand-50 px-2.5 py-2.5 text-left transition" data-category="images" onclick="switchCategory('images', this)" type="button">
+<span class="flex items-center gap-2 text-xs font-semibold text-brand-600">
+<iconify-icon icon="solar:gallery-wide-linear" width="16"></iconify-icon>
+                图片素材
+              </span>
+<span class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-medium text-brand-500">6</span>
+</button>
+<button class="flex w-full items-center justify-between rounded-xl px-2.5 py-2.5 text-left transition hover:bg-slate-50" data-category="copy" onclick="switchCategory('copy', this)" type="button">
+<span class="flex items-center gap-2 text-xs font-medium text-slate-600">
+<iconify-icon icon="solar:quote-up-square-linear" width="16"></iconify-icon>
+                文案片段
+              </span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">6</span>
+</button>
+<button class="flex w-full items-center justify-between rounded-xl px-2.5 py-2.5 text-left transition hover:bg-slate-50" data-category="titles" onclick="switchCategory('titles', this)" type="button">
+<span class="flex items-center gap-2 text-xs font-medium text-slate-600">
+<iconify-icon icon="solar:text-square-linear" width="16"></iconify-icon>
+                爆款标题
+              </span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">6</span>
+</button>
+<button class="flex w-full items-center justify-between rounded-xl px-2.5 py-2.5 text-left transition hover:bg-slate-50" data-category="tags" onclick="switchCategory('tags', this)" type="button">
+<span class="flex items-center gap-2 text-xs font-medium text-slate-600">
+<iconify-icon icon="solar:hashtag-square-linear" width="16"></iconify-icon>
+                标签库
+              </span>
+<span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">4 组</span>
+</button>
+</div>
+<div class="mt-3 rounded-xl border border-dashed border-slate-200 bg-slate-50/70 p-3">
+<p class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600">
+<iconify-icon class="text-amber-500" icon="solar:lightbulb-linear" width="14"></iconify-icon>
+              使用建议
+            </p>
+<p class="mt-1.5 text-[10px] leading-5 text-slate-400">
+              素材用于提供结构和表达参考，发布前请替换为原创图片与真实体验。
+            </p>
+</div>
+<a class="mt-3 flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2.5 text-[11px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" href="topics.html">
+            去话题追踪收集
+            <iconify-icon icon="solar:arrow-right-linear" width="13"></iconify-icon>
+</a>
+</div>
+</aside>
+<!-- 素材主区 -->
+<section class="min-w-0">
+<div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-semibold text-slate-800" id="panelTitle">图片素材</h2>
+<span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500" id="panelSubtitle">6 条 · 3:4 封面优先</span>
+</div>
+<div class="relative">
+<iconify-icon class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" icon="solar:magnifer-linear" width="15"></iconify-icon>
+<input class="w-full rounded-lg border border-slate-200 bg-slate-50/70 py-2 pl-8 pr-3 text-[11px] text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-50 sm:w-60" id="assetSearch" oninput="filterAssets()" placeholder="搜索当前分组的素材" type="text"/>
+</div>
+</div>
+<div class="mt-4">
+<!-- 图片素材 -->
+<div data-panel="images">
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+<article class="asset-item" data-search="通勤包平铺图 通勤 箱包 场景图 3:4">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-brand-100 via-orange-50 to-amber-100">
+<div class="grid-bg absolute inset-0 opacity-50"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">场景图 · 3:4</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="grid h-14 w-14 place-items-center rounded-2xl bg-white/70 text-brand-500 shadow-sm">
+<iconify-icon icon="solar:bag-4-bold" width="28"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#通勤</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#箱包</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">通勤包平铺图</p>
+<p class="mt-1 text-[10px] text-slate-400">1080×1440 · 昨天加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=通勤包平铺图">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '通勤包平铺图｜场景：早八地铁与办公桌｜建议作为首图，标题可配「能装」角度')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="咖啡店氛围图 居家 生活 场景图 4:3">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-amber-100 via-stone-50 to-orange-50">
+<div class="grid-bg absolute inset-0 opacity-40"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">氛围图 · 4:3</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="grid h-14 w-14 place-items-center rounded-2xl bg-white/70 text-amber-500 shadow-sm">
+<iconify-icon icon="solar:cup-hot-bold" width="28"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#居家</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#生活感</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">咖啡店氛围图</p>
+<p class="mt-1 text-[10px] text-slate-400">1200×900 · 周一加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=咖啡店氛围图">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '咖啡店氛围图｜适合用作「周末慢生活」类笔记的过渡图｜注意露出品牌需打码')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="卧室改造对比 家居 改造 前后对比 3:4">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-sky-100 via-slate-50 to-sky-50">
+<div class="grid-bg absolute inset-0 opacity-50"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">对比图 · 3:4</span>
+<div class="absolute inset-0 flex items-center justify-center gap-2">
+<span class="grid h-12 w-12 place-items-center rounded-xl bg-white/70 text-slate-400 shadow-sm">
+<iconify-icon icon="solar:bed-linear" width="24"></iconify-icon>
+</span>
+<iconify-icon class="text-slate-400" icon="solar:arrow-right-linear" width="18"></iconify-icon>
+<span class="grid h-12 w-12 place-items-center rounded-xl bg-white/80 text-sky-500 shadow-sm">
+<iconify-icon icon="solar:workspace-linear" width="24"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#租房改造</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#小户型</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">卧室改造前后对比</p>
+<p class="mt-1 text-[10px] text-slate-400">1080×1440 · 3 天前加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=卧室改造前后对比">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '卧室改造前后对比｜建议用同一角度拍摄，封面加「12㎡」数字标签')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="便当俯拍图 一人食 美食 1:1">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-lime-100 via-emerald-50 to-amber-100">
+<div class="grid-bg absolute inset-0 opacity-40"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">美食图 · 1:1</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="grid h-14 w-14 place-items-center rounded-2xl bg-white/70 text-emerald-500 shadow-sm">
+<iconify-icon icon="solar:chef-hat-bold" width="28"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#一人食</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#带饭</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">一周便当俯拍图</p>
+<p class="mt-1 text-[10px] text-slate-400">1080×1080 · 3 天前加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=一周便当俯拍图">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '一周便当俯拍图｜建议拼成 3×2 九宫格，封面标注「成本 15 元」')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="工位桌面特写 桌面 办公 4:3">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 via-indigo-50 to-sky-100">
+<div class="grid-bg absolute inset-0 opacity-50"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">细节图 · 4:3</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="grid h-14 w-14 place-items-center rounded-2xl bg-white/70 text-indigo-500 shadow-sm">
+<iconify-icon icon="solar:monitor-smartphone-bold" width="28"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#桌面改造</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#工位</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">工位桌面特写</p>
+<p class="mt-1 text-[10px] text-slate-400">1600×1200 · 上周加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=工位桌面特写">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '工位桌面特写｜拍摄前先收纳线材，保留 1-2 个生活化小物')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="街景散步图 城市漫游 出行 3:2">
+<div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft">
+<div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-cyan-100 via-sky-50 to-teal-100">
+<div class="grid-bg absolute inset-0 opacity-40"></div>
+<span class="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-medium text-slate-600 backdrop-blur">场景图 · 3:2</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="grid h-14 w-14 place-items-center rounded-2xl bg-white/70 text-teal-500 shadow-sm">
+<iconify-icon icon="solar:map-point-wave-bold" width="28"></iconify-icon>
+</span>
+</div>
+<div class="absolute bottom-2.5 left-2.5 flex gap-1">
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#citywalk</span>
+<span class="rounded bg-white/80 px-1.5 py-0.5 text-[9px] text-slate-500">#城市漫游</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs font-semibold text-slate-800">街角散步场景图</p>
+<p class="mt-1 text-[10px] text-slate-400">1620×1080 · 上周加入</p>
+<div class="mt-2.5 flex gap-2">
+<a class="flex-1 rounded-lg bg-brand-600 px-2 py-1.5 text-center text-[10px] font-semibold text-white transition hover:bg-brand-700" href="create.html?asset=街角散步场景图">添加到创作</a>
+<button class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '街角散步场景图｜下午 4 点光线最柔和，适合做路线笔记的收尾图')" type="button">复制信息</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- 文案片段 -->
+<div class="hidden" data-panel="copy">
+<div class="grid gap-4 sm:grid-cols-2">
+<article class="asset-item" data-search="开篇钩子 通勤 实测 体验">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600">开篇钩子</span>
+<span class="text-[10px] text-slate-400">46 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">连续背了 21 天，我才发现通勤包最该看的不是容量，而是拿东西顺不顺手。</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：通勤 / 包包 / 实测</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '连续背了 21 天，我才发现通勤包最该看的不是容量，而是拿东西顺不顺手。')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="结尾互动 评论区 提问">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-600">结尾互动</span>
+<span class="text-[10px] text-slate-400">32 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">你的通勤包里一定会带什么？评论区告诉我，我帮你判断这只包够不够装～</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：清单 / 好物 / 测评</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '你的通勤包里一定会带什么？评论区告诉我，我帮你判断这只包够不够装～')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="使用感受 肩带 通勤 细节">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-600">使用感受</span>
+<span class="text-[10px] text-slate-400">29 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">装满之后肩带压力可以接受，通勤 40 分钟没有明显勒肩。</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：箱包 / 服饰</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '装满之后肩带压力可以接受，通勤 40 分钟没有明显勒肩。')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="场景描写 早八 地铁 咖啡">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-600">场景描写</span>
+<span class="text-[10px] text-slate-400">31 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">早八的地铁口，手里一杯咖啡，另一只手还能腾出来刷手机。</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：通勤 / 生活记录</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '早八的地铁口，手里一杯咖啡，另一只手还能腾出来刷手机。')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="价格说明 预算 平价">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600">价格说明</span>
+<span class="text-[10px] text-slate-400">27 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">预算两百出头，属于不用犹豫太久、但能用很久的类型。</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：好物 / 平价推荐</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '预算两百出头，属于不用犹豫太久、但能用很久的类型。')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="对比句 容量 分区 翻包">
+<div class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600">对比句</span>
+<span class="text-[10px] text-slate-400">28 字</span>
+</div>
+<p class="mt-3 flex-1 text-sm leading-7 text-slate-700">大包不等于能装，分区不合理只会让你每天在门口翻包。</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+<span class="text-[10px] text-slate-400">适用：测评 / 避坑</span>
+<button class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '大包不等于能装，分区不合理只会让你每天在门口翻包。')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                      复制
+                    </button>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- 爆款标题 -->
+<div class="hidden" data-panel="titles">
+<div class="grid gap-3 sm:grid-cols-2">
+<article class="asset-item" data-search="早八人请进 通勤包 身份代入">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-600">身份代入</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 A</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">早八人请进｜这只通勤包救了我的每一天</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">19 字 · 适合封面配使用场景</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '早八人请进｜这只通勤包救了我的每一天')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-早八人请进">去创作</a>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="别再乱买通勤包 反差 数字">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-600">反差 + 数字</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 A</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">别再乱买通勤包了，这 5 个细节才决定好不好用</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">22 字 · 适合测评型内容</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '别再乱买通勤包了，这 5 个细节才决定好不好用')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-别再乱买通勤包">去创作</a>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="12㎡ 卧室改造 租房 空间">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-600">空间 + 结果</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 A</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">12㎡ 卧室改造｜书桌和衣帽间真的能同时拥有</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">24 字 · 适合前后对比封面</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '12㎡ 卧室改造｜书桌和衣帽间真的能同时拥有')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-卧室改造">去创作</a>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="一周带饭 成本 15 元 清单">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-600">时间 + 成本</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 B</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">一周带饭不重样，成本控制在 15 元以内</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">21 字 · 适合九宫格便当图</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '一周带饭不重样，成本控制在 15 元以内')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-一周带饭">去创作</a>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="敏感肌 换季护肤 3 步 减法">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-600">减法承诺</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 B</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">敏感肌换季护肤：把步骤减到 3 步</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">17 字 · 适合产品合集封面</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '敏感肌换季护肤：把步骤减到 3 步')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-换季护肤">去创作</a>
+</div>
+</div>
+</div>
+</article>
+<article class="asset-item" data-search="周末 citywalk 6 个点 拍照">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<span class="rounded-full bg-cyan-50 px-2 py-0.5 text-[10px] font-medium text-cyan-600">地点 + 数字</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600"><iconify-icon icon="solar:graph-up-linear" width="11"></iconify-icon>热度 B</span>
+</div>
+<p class="mt-2.5 text-sm font-semibold leading-6 text-slate-800">周末 citywalk｜人少好拍的 6 个点位</p>
+<div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+<span class="text-[10px] text-slate-400">20 字 · 适合路线地图封面</span>
+<div class="flex items-center gap-1.5">
+<button class="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '周末 citywalk｜人少好拍的 6 个点位')" type="button">复制</button>
+<a class="rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-brand-600" href="create.html?asset=标题-citywalk">去创作</a>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- 标签库 -->
+<div class="hidden" data-panel="tags">
+<div class="grid gap-4 sm:grid-cols-2">
+<article class="asset-item" data-search="通勤穿搭组 通勤 早八 包包">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-50 text-brand-500">
+<iconify-icon icon="solar:bag-4-linear" width="16"></iconify-icon>
+</span>
+<p class="text-xs font-semibold text-slate-800">通勤穿搭组</p>
+</div>
+<span class="text-[10px] text-slate-400">6 个标签</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-1.5">
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#通勤穿搭</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#早八穿搭</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#包包分享</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#打工人日常</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#通勤好物</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#轻量出行</span>
+</div>
+<button class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-slate-200 py-2 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '#通勤穿搭 #早八穿搭 #包包分享 #打工人日常 #通勤好物 #轻量出行')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                    复制整组标签
+                  </button>
+</div>
+</article>
+<article class="asset-item" data-search="家居改造组 租房 收纳 空间">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-sky-50 text-sky-500">
+<iconify-icon icon="solar:sofa-linear" width="16"></iconify-icon>
+</span>
+<p class="text-xs font-semibold text-slate-800">家居改造组</p>
+</div>
+<span class="text-[10px] text-slate-400">5 个标签</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-1.5">
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#租房改造</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#小户型收纳</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#空间利用</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#家居好物</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#改造日记</span>
+</div>
+<button class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-slate-200 py-2 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '#租房改造 #小户型收纳 #空间利用 #家居好物 #改造日记')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                    复制整组标签
+                  </button>
+</div>
+</article>
+<article class="asset-item" data-search="一人食组 带饭 便当 快手菜">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-500">
+<iconify-icon icon="solar:chef-hat-linear" width="16"></iconify-icon>
+</span>
+<p class="text-xs font-semibold text-slate-800">一人食组</p>
+</div>
+<span class="text-[10px] text-slate-400">5 个标签</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-1.5">
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#一人食</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#带饭日常</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#快手菜</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#便当灵感</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#美食日记</span>
+</div>
+<button class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-slate-200 py-2 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '#一人食 #带饭日常 #快手菜 #便当灵感 #美食日记')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                    复制整组标签
+                  </button>
+</div>
+</article>
+<article class="asset-item" data-search="护肤分享组 敏感肌 换季 成分">
+<div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="grid h-8 w-8 place-items-center rounded-lg bg-teal-50 text-teal-500">
+<iconify-icon icon="solar:test-tube-linear" width="16"></iconify-icon>
+</span>
+<p class="text-xs font-semibold text-slate-800">护肤分享组</p>
+</div>
+<span class="text-[10px] text-slate-400">5 个标签</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-1.5">
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#敏感肌护肤</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#换季护肤</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#成分党</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#护肤步骤</span>
+<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">#空瓶记</span>
+</div>
+<button class="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border border-slate-200 py-2 text-[10px] font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand-600" onclick="copyItem(this, '#敏感肌护肤 #换季护肤 #成分党 #护肤步骤 #空瓶记')" type="button">
+<iconify-icon icon="solar:copy-linear" width="12"></iconify-icon>
+                    复制整组标签
+                  </button>
+</div>
+</article>
+</div>
+</div>
+<div class="mt-2 hidden rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center" id="assetEmpty">
+<span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-400">
+<iconify-icon icon="solar:magnifer-zoom-out-linear" width="24"></iconify-icon>
+</span>
+<p class="mt-4 text-sm font-semibold text-slate-700">当前分组没有匹配的素材</p>
+<p class="mt-1 text-xs text-slate-400">试试更短的关键词，或切换到其他分组。</p>
+<button class="mt-4 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-brand-600" onclick="clearSearch()" type="button">清空搜索</button>
+</div>
+</div>
+<div class="mt-5 flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3">
+<p class="flex items-center gap-1.5 text-[11px] text-slate-400">
+<iconify-icon icon="solar:info-circle-linear" width="14"></iconify-icon>
+            素材为原型演示内容，图片以渐变占位呈现。
+          </p>
+<a class="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 transition hover:text-brand-700" href="create.html">
+            开始撰写
+            <iconify-icon icon="solar:arrow-right-linear" width="13"></iconify-icon>
+</a>
+</div>
+</section>
+</div>
+</main>
+<div class="pointer-events-none fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2 rounded-xl bg-slate-900/95 px-4 py-2.5 text-xs font-medium text-white shadow-lg" id="toast"></div>
+<script>
+    const categories = {
+      images: { title: '图片素材', subtitle: '6 条 · 3:4 封面优先' },
+      copy: { title: '文案片段', subtitle: '6 条 · 可直接改写' },
+      titles: { title: '爆款标题', subtitle: '6 条 · 结构参考' },
+      tags: { title: '标签库', subtitle: '4 组 · 按场景归档' }
+    };
+    let activeCategory = 'images';
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(function () {
+        el.classList.add('hidden');
+      }, 2500);
+    }
+
+    function switchCategory(key, btn) {
+      activeCategory = key;
+      document.querySelectorAll('[data-panel]').forEach(function (panel) {
+        panel.classList.toggle('hidden', panel.dataset.panel !== key);
+      });
+      document.querySelectorAll('[data-category]').forEach(function (item) {
+        const active = item.dataset.category === key;
+        item.className = active
+          ? 'flex w-full items-center justify-between rounded-xl bg-brand-50 px-2.5 py-2.5 text-left transition'
+          : 'flex w-full items-center justify-between rounded-xl px-2.5 py-2.5 text-left transition hover:bg-slate-50';
+        const label = item.querySelector('span span');
+        const count = item.querySelector('span:last-child');
+        if (label) label.className = active ? 'flex items-center gap-2 text-xs font-semibold text-brand-600' : 'flex items-center gap-2 text-xs font-medium text-slate-600';
+        if (count) count.className = active
+          ? 'rounded-md bg-white px-1.5 py-0.5 text-[10px] font-medium text-brand-500'
+          : 'rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500';
+      });
+
+      document.getElementById('panelTitle').textContent = categories[key].title;
+      document.getElementById('panelSubtitle').textContent = categories[key].subtitle;
+      clearSearch();
+    }
+
+    function filterAssets() {
+      const keyword = document.getElementById('assetSearch').value.trim().toLowerCase();
+      const panel = document.querySelector('[data-panel="' + activeCategory + '"]');
+      const items = panel.querySelectorAll('.asset-item');
+      let visible = 0;
+
+      items.forEach(function (item) {
+        const haystack = ((item.dataset.search || '') + ' ' + item.textContent).toLowerCase();
+        const show = !keyword || haystack.indexOf(keyword) !== -1;
+        item.classList.toggle('hidden', !show);
+        if (show) visible += 1;
+      });
+
+      document.getElementById('assetEmpty').classList.toggle('hidden', visible !== 0);
+    }
+
+    function clearSearch() {
+      document.getElementById('assetSearch').value = '';
+      filterAssets();
+    }
+
+    function copyItem(btn, text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          toast('已复制到剪贴板');
+        }).catch(function () {
+          toast('已复制内容（演示）');
+        });
+      } else {
+        toast('已复制内容（演示）');
+      }
+      if (btn) {
+        const original = btn.textContent;
+        btn.textContent = '已复制';
+        setTimeout(function () {
+          btn.textContent = original;
+        }, 1600);
+      }
+    }
+
+    filterAssets();
+  </script>
+</body>
+</html>
