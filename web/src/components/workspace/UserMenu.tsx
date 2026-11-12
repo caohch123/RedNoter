@@ -1,33 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { authApi } from "@/lib/api/auth";
-import type { User } from "@/lib/api/types";
+import { useCurrentUser } from "./CurrentUser";
 
-/** 右上角的当前用户与退出登录。会话失效时清掉 cookie 并回到登录页。 */
+/** 右上角的当前用户与退出登录 */
 export function UserMenu() {
-  const [user, setUser] = useState<User | null>(null);
+  const user = useCurrentUser();
   const router = useRouter();
-
-  useEffect(() => {
-    let cancelled = false;
-    authApi
-      .me()
-      .then((res) => {
-        if (!cancelled) setUser(res.user);
-      })
-      .catch(async () => {
-        if (cancelled) return;
-        await authApi.logout().catch(() => undefined);
-        const next = encodeURIComponent(window.location.pathname);
-        router.replace(`/login?next=${next}`);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [router]);
 
   async function logout() {
     await authApi.logout().catch(() => undefined);

@@ -38,6 +38,17 @@ src/
 
 导航、登录校验和用户菜单由 `workspace/layout.tsx` 统一提供，模块里不用再处理。
 
+### 从静态原型搬页面时要注意
+
+- **容器自己写**：外壳不限制内容宽度，模块页面自己包一层 `<main className="mx-auto w-full max-w-[1240px] px-5 ...">`（AI 创作原型用的是 1480px）。
+- **不要搬 `<header>` 和 `<script>`**：顶部导航已由外壳提供；原型里的 `onclick="..."` 要改成 React 的状态和事件。
+- **图标**：原型用的 `<iconify-icon>` 这里没有，换成 `lucide-react` 里的图标组件。
+- **Tailwind 是 v4**：没有 `tailwind.config.js`，颜色等主题变量在 `src/app/globals.css` 的 `@theme` 里。原型用到的 `brand-*`、`shadow-soft`、`grid-bg`、`no-scrollbar`、`typing-dot` 都已定义，其中 `brand-*` 是紫色而不是原型的粉色。
+- **配色**：原型是浅色主题，现在的外壳是深色。直接搬过来的白底卡片能正常显示，但直接写在页面背景上的深色文字（如 `text-slate-900`）会看不清，需要统一处理。
+- **当前用户**：客户端组件里用 `useCurrentUser()`（`src/components/workspace/CurrentUser.tsx`），不要再单独请求 `/auth/me`。
+- **请求接口**：统一用 `src/lib/api/client.ts` 的 `request()`，路径不带 `/api` 前缀；传 `FormData` 可以上传文件。每个模块在 `src/lib/api/` 下建自己的文件（参考 `auth.ts`）。
+- **Next.js 是 16**：开启了 Cache Components，服务端组件里读取 cookie、`searchParams` 等请求数据时必须包在 `<Suspense>` 里，否则构建报错。写代码前先看 `AGENTS.md` 的提示。
+
 ## 登录接口契约
 
 前端只请求同源的 `/api/*`，会话用 httpOnly cookie（`zx_session`）保存。类型定义见 `src/lib/api/types.ts`。

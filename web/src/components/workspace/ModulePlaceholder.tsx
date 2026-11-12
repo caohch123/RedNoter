@@ -4,6 +4,7 @@ import { WORKSPACE_MODULES } from "@/lib/workspace/modules";
 export function ModulePlaceholder({ slug }: { slug: string }) {
   const mod = WORKSPACE_MODULES.find((m) => m.slug === slug);
   return (
+    <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-10 sm:px-6">
     <div className="glass mx-auto mt-10 max-w-lg rounded-2xl p-10 text-center">
       <h1 className="text-xl font-bold text-white">{mod?.name ?? slug}</h1>
       <p className="mt-2 text-sm leading-6 text-slate-400">{mod?.desc}</p>
@@ -11,5 +12,6 @@ export function ModulePlaceholder({ slug }: { slug: string }) {
         模块开发中
       </p>
     </div>
+    </main>
   );
 }

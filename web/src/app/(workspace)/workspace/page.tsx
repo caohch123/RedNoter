@@ -4,7 +4,7 @@ import { WORKSPACE_MODULES } from "@/lib/workspace/modules";
 
 export default function WorkspaceHomePage() {
   return (
-    <>
+    <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-10 sm:px-6">
       <h1 className="text-2xl font-bold tracking-tight text-white">创作工作区</h1>
       <p className="mt-2 text-sm text-slate-400">
         登录成功。下面四个模块正在开发中，接入后会出现在这里。
@@ -37,6 +37,6 @@ export default function WorkspaceHomePage() {
           </li>
         ))}
       </ul>
-    </>
+    </main>
   );
 }
