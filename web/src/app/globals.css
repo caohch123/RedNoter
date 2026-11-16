@@ -107,6 +107,12 @@ body {
   color: #e2e8f0;
 }
 
+/* Edge 会给密码框自带一个「显示密码」按钮，和我们自己的重复了，隐藏掉 */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 ::selection {
   background: rgba(139, 123, 255, 0.45);
   color: #fff;
