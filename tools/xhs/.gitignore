@@ -1,0 +1,11 @@
+.venv/
+.cache/
+.runtime/
+runs/
+output/
+__pycache__/
+MediaCrawler/browser_data/
+MediaCrawler/data/
+MediaCrawler/.env
+MediaCrawler/logs/
+MediaCrawler/*.log

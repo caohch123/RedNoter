@@ -1,0 +1,48 @@
+# Local account data, downloaded posts and browser login profiles
+.mock/
+/web/public/imported-media/
+/tools/xhs/.runtime/
+/tools/xhs/runs/
+/tools/xhs/output/
+/tools/xhs/MediaCrawler/browser_data/
+/tools/xhs/MediaCrawler/data/
+/tools/xhs/MediaCrawler/logs/
+/tools/xhs/MediaCrawler/temp_image/
+
+# Local settings and secrets; keep shareable configuration templates
+.env*
+!.env.example
+*.pem
+*.key
+
+# Dependencies, builds and caches (recreated on each computer)
+node_modules/
+.next/
+.venv/
+venv/
+.cache/
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+/web/out/
+/web/build/
+coverage/
+
+# Editor and assistant settings may contain local paths and user information
+.vs/
+.vscode/
+.idea/
+.claude/
+.codex/
+
+# Runtime logs, local databases and operating-system files
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+.DS_Store
+Thumbs.db
+Desktop.ini
