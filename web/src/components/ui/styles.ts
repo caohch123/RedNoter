@@ -1,16 +1,20 @@
 /** 全站复用的按钮与输入框样式 */
 
-export const btnPrimary =
-  "btn-shine inline-flex items-center justify-center gap-2 rounded-xl bg-star-300 font-semibold text-space-950 shadow-[0_10px_40px_-12px_rgba(249,215,126,0.7)] transition hover:bg-star-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-star-200 disabled:cursor-not-allowed disabled:opacity-60";
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-900";
 
-export const btnGhost =
-  "inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 font-semibold text-white transition hover:border-white/30 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-300";
+/** 主按钮：近黑色实心 */
+export const btnPrimary = `inline-flex items-center justify-center gap-2 rounded-lg bg-ink-900 bg-gradient-to-b from-[#34332f] to-ink-900 font-medium text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_1px_2px_rgba(60,42,24,0.25),-3px_8px_18px_-10px_rgba(60,42,24,0.55)] transition hover:from-[#46453f] hover:to-[#26261f] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`;
+
+/** 次按钮：浅沙色底 */
+export const btnSecondary = `inline-flex items-center justify-center gap-2 rounded-lg bg-sand-200 font-medium text-ink-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_1px_2px_rgba(60,42,24,0.08)] transition hover:bg-sand-300 active:scale-[0.98] ${focusRing}`;
+
+/** 描边按钮 */
+export const btnOutline = `inline-flex items-center justify-center gap-2 rounded-lg border border-ink-900/15 font-medium text-ink-700 transition hover:border-ink-900/30 hover:bg-ink-900/[0.03] active:scale-[0.98] ${focusRing}`;
 
 export const inputBase =
-  "w-full rounded-xl border bg-white/5 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:bg-white/10 focus:ring-4";
+  "w-full rounded-lg border bg-white py-3 text-sm text-ink-900 outline-none transition placeholder:text-ink-400 focus:ring-4";
 
-export const inputOk =
-  "border-white/10 focus:border-brand-400 focus:ring-brand-500/20";
+export const inputOk = "border-ink-900/15 focus:border-ink-900/40 focus:ring-ink-900/5";
 
-export const inputBad =
-  "border-rose-400/60 focus:border-rose-400 focus:ring-rose-500/20";
+export const inputBad = "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10";
