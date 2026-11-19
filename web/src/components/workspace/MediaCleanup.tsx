@@ -24,10 +24,10 @@ export function MediaCleanup({ disabled }: { disabled: boolean }) {
 
   return <div className="mt-4">
     <button type="button" disabled={disabled || busy} onClick={() => void cleanup()}
-      className="rounded-lg border border-white/20 px-3 py-2 text-sm text-slate-300 disabled:opacity-50">
+      className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 disabled:opacity-50">
       {busy ? "正在清理…" : "清理淘汰图片"}
     </button>
-    {error && <p role="alert" className="mt-2 text-sm text-red-400">{error}</p>}
-    {message && <p role="status" className="mt-2 text-sm text-emerald-300">{message}</p>}
+    {error && <p role="alert" className="mt-2 text-sm text-red-600">{error}</p>}
+    {message && <p role="status" className="mt-2 text-sm text-emerald-600">{message}</p>}
   </div>;
 }

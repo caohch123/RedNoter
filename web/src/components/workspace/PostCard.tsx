@@ -6,7 +6,7 @@ import type { Post } from "@/lib/collections";
 
 export function PostImage({ src, alt, cover = false }: { src: string; alt: string; cover?: boolean }) {
   const [failed, setFailed] = useState(false);
-  if (failed) return <div className="flex h-full w-full items-center justify-center bg-white/5 text-sm text-slate-400">图片暂不可用</div>;
+  if (failed) return <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-500">图片暂不可用</div>;
   return <img src={src} alt={alt} loading="lazy" draggable={false} onError={() => setFailed(true)}
     className={"h-full w-full " + (cover ? "object-cover" : "object-contain")} />;
 }
@@ -47,13 +47,13 @@ export function PostDetail({ post, actions, onClose, initialImageIndex = 0 }: {
         if (event.key === "ArrowLeft") { event.preventDefault(); goTo(index - 1); }
         if (event.key === "ArrowRight") { event.preventDefault(); goTo(index + 1); }
       }}
-      className="fixed inset-0 m-auto max-h-[92dvh] w-[min(1100px,94vw)] max-w-none overflow-y-auto rounded-2xl border border-white/15 bg-[#11111c] p-0 text-white shadow-2xl backdrop:bg-black/75">
-      <div className="sticky top-0 z-20 flex justify-end bg-[#11111c]/95 px-4 py-2">
+      className="fixed inset-0 m-auto max-h-[92dvh] w-[min(1100px,94vw)] max-w-none overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/50">
+      <div className="sticky top-0 z-20 flex justify-end bg-white/95 px-4 py-2">
         <button type="button" autoFocus onClick={onClose} aria-label="关闭帖子详情"
-          className="rounded-full px-3 py-2 text-xl hover:bg-white/10">×</button>
+          className="rounded-full px-3 py-2 text-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900">×</button>
       </div>
       <div className="grid md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-        <div className="relative min-w-0 bg-black/30">
+        <div className="relative min-w-0 bg-slate-100">
           {images.length ? (
             <>
               <div ref={gallery} role="region" aria-label="帖子图片，可左右滑动"
@@ -71,28 +71,28 @@ export function PostDetail({ post, actions, onClose, initialImageIndex = 0 }: {
               </div>
               {images.length > 1 && <>
                 <button type="button" aria-label="上一张图片" disabled={index === 0} onClick={() => goTo(index - 1)}
-                  className="absolute left-3 top-1/2 rounded-full bg-black/60 px-3 py-2 text-xl disabled:opacity-25">‹</button>
+                  className="absolute left-3 top-1/2 rounded-full bg-white/90 px-3 py-2 text-xl text-slate-700 shadow-sm disabled:opacity-25">‹</button>
                 <button type="button" aria-label="下一张图片" disabled={index === images.length - 1} onClick={() => goTo(index + 1)}
-                  className="absolute right-3 top-1/2 rounded-full bg-black/60 px-3 py-2 text-xl disabled:opacity-25">›</button>
+                  className="absolute right-3 top-1/2 rounded-full bg-white/90 px-3 py-2 text-xl text-slate-700 shadow-sm disabled:opacity-25">›</button>
               </>}
-              <p aria-live="polite" className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-sm">{index + 1} / {images.length}</p>
+              <p aria-live="polite" className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm text-white">{index + 1} / {images.length}</p>
             </>
-          ) : <div className="flex h-60 items-center justify-center text-slate-400">这篇帖子没有图片</div>}
+          ) : <div className="flex h-60 items-center justify-center text-slate-500">这篇帖子没有图片</div>}
         </div>
         <div className="min-w-0 p-6">
-          <p className="text-sm text-slate-400">{post.author}</p>
+          <p className="text-sm text-slate-500">{post.author}</p>
           <h2 className="mt-4 break-words text-2xl font-bold">{post.title}</h2>
-          <p className="mt-5 whitespace-pre-wrap break-words leading-7 text-slate-300">{post.content || "暂无正文"}</p>
+          <p className="mt-5 whitespace-pre-wrap break-words leading-7 text-slate-700">{post.content || "暂无正文"}</p>
           {!!post.tags?.length && (
             <ul aria-label="原帖话题标签" className="mt-4 flex flex-wrap gap-2">
               {Array.from(new Set(post.tags.map(tag => tag.trim()).filter(Boolean))).map(tag => (
-                <li key={tag} className="max-w-full break-words rounded-full bg-purple-500/10 px-3 py-1 text-sm text-purple-300">
+                <li key={tag} className="max-w-full break-words rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-600">
                   #{tag.replace(/^#+/, "")}
                 </li>
               ))}
             </ul>
           )}
-          <p className="mt-6 text-sm text-purple-300">点赞：{post.likes}</p>
+          <p className="mt-6 text-sm text-brand-600">点赞：{post.likes}</p>
           <div className="flex flex-wrap items-center gap-2">{actions}</div>
         </div>
       </div>
@@ -104,19 +104,19 @@ export function PostCard({ post, actions, badge }: { post: Post; actions: ReactN
   const [open, setOpen] = useState(false);
   const firstImage = post.images?.[0];
   return (
-    <article className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:border-purple-400/40">
+    <article className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-brand-200">
       <button type="button" onClick={() => setOpen(true)} aria-label={"查看帖子详情：" + post.title}
-        className="block w-full text-left focus-visible:outline-2 focus-visible:outline-purple-400">
-        <div className="relative aspect-[3/4] overflow-hidden bg-black/20">
+        className="block w-full text-left focus-visible:outline-2 focus-visible:outline-brand-400">
+        <div className="relative aspect-[3/4] overflow-hidden bg-slate-100">
           {firstImage
             ? <PostImage key={firstImage} src={firstImage} alt={post.title} cover />
-            : <div className="flex h-full items-center justify-center bg-gradient-to-br from-purple-900/40 to-slate-900 p-6"><span className="line-clamp-6 text-xl font-semibold leading-relaxed">{post.title}</span></div>}
+            : <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-50 to-slate-100 p-6"><span className="line-clamp-6 text-xl font-semibold leading-relaxed text-slate-800">{post.title}</span></div>}
           {badge && <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-1 text-xs text-white">{badge}</span>}
-          {(post.images?.length ?? 0) > 1 && <span className="absolute bottom-3 right-3 rounded-full bg-black/60 px-2 py-1 text-xs">{post.images!.length} 张图片</span>}
+          {(post.images?.length ?? 0) > 1 && <span className="absolute bottom-3 right-3 rounded-full bg-black/60 px-2 py-1 text-xs text-white">{post.images!.length} 张图片</span>}
         </div>
         <div className="p-4">
-          <h2 className="line-clamp-2 text-base font-semibold leading-6 text-white">{post.title}</h2>
-          <div className="mt-3 flex items-center justify-between gap-3 text-sm text-slate-400">
+          <h2 className="line-clamp-2 text-base font-semibold leading-6 text-slate-900">{post.title}</h2>
+          <div className="mt-3 flex items-center justify-between gap-3 text-sm text-slate-500">
             <span className="truncate">{post.author}</span><span className="shrink-0">♡ {post.likes}</span>
           </div>
         </div>
