@@ -1,48 +1,68 @@
 import Link from "next/link";
-import { ArrowRight, CircleCheck } from "lucide-react";
-import { btnGhost, btnPrimary } from "@/components/ui/styles";
-import { HeroDemo } from "./HeroDemo";
+import { ArrowRight } from "lucide-react";
+import { StarMark } from "@/components/ui/Logo";
+import { btnPrimary, btnSecondary } from "@/components/ui/styles";
+import { HeroWall } from "./HeroWall";
 
-const POINTS = ["原创 / 仿写双模式", "话题与素材持续沉淀", "用户名 + 密码即可注册"];
+/** 依次出现的动画延迟（秒） */
+const at = (s: number) => ({ animationDelay: `${s}s` });
 
+/** 首屏：画面交给照片墙，文字只留一句标题、一句话和两个按钮 */
 export function Hero() {
   return (
-    <section className="relative">
-      <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-6 pb-20 pt-14 lg:grid-cols-[1.02fr_1fr] lg:gap-10 lg:pb-28 lg:pt-20">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-brand-200">
-            <span className="h-1.5 w-1.5 animate-twinkle rounded-full bg-star-300" />
-            AI 驱动的小红书内容创作工作台
+    <HeroWall>
+      <div className="flex flex-col items-center text-center">
+        {/* 标题：墨色渐变 + 纸面高光 + 一层很淡的投影；每隔一会儿有一道暖光扫过 */}
+        <h1 className="font-serif text-[42px] font-medium leading-[1.2] tracking-[0.01em] [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.9))_drop-shadow(0_18px_28px_rgba(60,42,24,0.12))] sm:text-[60px] lg:text-[76px]">
+          <span className="hero-rise block" style={at(0.35)}>
+            <span className="ink-sheen">每一篇爆款笔记，</span>
           </span>
-          <h1 className="mt-6 text-[36px] font-bold leading-[1.18] tracking-tight text-white sm:text-[48px] lg:text-[56px]">
-            每一篇爆款笔记，
-            <br />
-            都是等你<span className="text-starlight">摘下的星</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-[15px] leading-7 text-slate-300">
-            摘星帮你追踪热门话题、沉淀爆款素材，再用 AI
-            把灵感写成能发布的小红书笔记。从「写什么」到「发出去」，都在同一片星空下完成。
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Link className={`${btnPrimary} px-5 py-3.5 text-sm`} href="/register">
-              免费注册，开始摘星
-              <ArrowRight size={17} />
-            </Link>
-            <Link className={`${btnGhost} px-5 py-3.5 text-sm`} href="/login">
-              已有账号，登录
-            </Link>
-          </div>
-          <ul className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-400">
-            {POINTS.map((point) => (
-              <li key={point} className="inline-flex items-center gap-1.5">
-                <CircleCheck className="text-emerald-400" size={15} />
-                {point}
-              </li>
-            ))}
-          </ul>
+          <span className="hero-rise block" style={at(0.5)}>
+            <span className="ink-sheen" style={{ animationDelay: "2.7s" }}>
+              都是等你
+            </span>
+            <span className="relative inline-block">
+              <span className="ink-star">摘下的星</span>
+              {/* 「星」字右上角一颗会闪的小星光 */}
+              <span aria-hidden="true" className="twinkle absolute -right-[0.38em] -top-[0.1em] text-brand-400">
+                <StarMark size={20} />
+              </span>
+              {/* 手写感的下划线，入场时画出来 */}
+              <svg
+                aria-hidden="true"
+                className="absolute -bottom-[0.18em] left-0 h-[0.32em] w-full overflow-visible text-brand-500"
+                preserveAspectRatio="none"
+                viewBox="0 0 200 20"
+              >
+                <path
+                  className="hero-draw"
+                  d="M3 14 C 45 4, 110 4, 197 11"
+                  fill="none"
+                  pathLength={1}
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="5"
+                  style={at(1.1)}
+                />
+              </svg>
+            </span>
+          </span>
+        </h1>
+
+        <p className="hero-rise mt-7 text-[17px] text-ink-500 sm:text-xl" style={at(0.7)}>
+          追热点、存素材、写笔记，一个工作台就够了。
+        </p>
+
+        <div className="hero-rise mt-9 flex flex-wrap items-center justify-center gap-3" style={at(0.85)}>
+          <Link className={`${btnPrimary} group px-6 py-3.5 text-[15px]`} href="/register">
+            免费开始创作
+            <ArrowRight className="transition group-hover:translate-x-0.5" size={16} />
+          </Link>
+          <Link className={`${btnSecondary} px-6 py-3.5 text-[15px]`} href="#try">
+            先试一试
+          </Link>
         </div>
-        <HeroDemo />
       </div>
-    </section>
+    </HeroWall>
   );
 }

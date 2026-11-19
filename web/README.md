@@ -4,6 +4,8 @@ Next.js（App Router）+ TypeScript + Tailwind CSS。包含官网首页、登录
 
 ## 启动
 
+需要 Node.js 20.9 或更高版本（Next.js 16 的要求）。
+
 ```bash
 npm install
 npm run dev
@@ -31,6 +33,18 @@ src/
 └─ proxy.ts       官网与工作区的跳转边界（未登录 → /login）
 ```
 
+## 官网的图片和字体
+
+- **示例图片**在 `public/showcase/`，来自 Unsplash 免费图库（可商用、无需署名），作者清单见 `public/showcase/CREDITS.md`。首屏照片墙和「作品展示」的数据在 `src/lib/marketing/showcase.ts`，标题、正文、昵称都是团队编写的示例，页面上标明了「示例作品」。换成真实作品前要先拿到作者授权，不要直接搬运小红书上别人的笔记。
+- **字体**都跟随网站一起部署，不依赖谷歌，浏览器只下载页面上用到的字：
+  - 标题 `font-serif`：中文思源宋体（`@fontsource/noto-serif-sc`，OFL），西文和数字 Newsreader（`@fontsource-variable/newsreader`，OFL）；
+  - 点缀 `font-hand`：霞鹜文楷（`lxgw-wenkai-lite-webfont`，OFL），只用在「团队在跟你说话」的短句和那封信上。
+- **首屏照片墙**在 `src/components/marketing/HeroWall.tsx`：七列照片斜着缓慢滚动，点任意一张会弹出「摘下这颗星」。
+- **光影**：全站假设只有一个光源——右上方窗户照进来的暖光。
+  - 树影贴图在 `public/textures/`，是程序绘制的原创素材（不涉及版权），组件是 `src/components/ui/LeafShadow.tsx`；
+  - 阴影统一用 `shadow-card` / `shadow-float`（偏暖、略向左下），标题墨色用 `ink-print`。照片保持原本的鲜亮，不再统一调色。
+- **写给你的一封信**的正文在 `src/components/marketing/Letter.tsx` 顶部，团队可以换成自己的话。
+
 ## 接入工作区模块
 
 1. 把 `src/app/(workspace)/workspace/<模块>/page.tsx` 里的占位页换成真实页面；
@@ -43,8 +57,8 @@ src/
 - **容器自己写**：外壳不限制内容宽度，模块页面自己包一层 `<main className="mx-auto w-full max-w-[1240px] px-5 ...">`（AI 创作原型用的是 1480px）。
 - **不要搬 `<header>` 和 `<script>`**：顶部导航已由外壳提供；原型里的 `onclick="..."` 要改成 React 的状态和事件。
 - **图标**：原型用的 `<iconify-icon>` 这里没有，换成 `lucide-react` 里的图标组件。
-- **Tailwind 是 v4**：没有 `tailwind.config.js`，颜色等主题变量在 `src/app/globals.css` 的 `@theme` 里。原型用到的 `brand-*`、`shadow-soft`、`grid-bg`、`no-scrollbar`、`typing-dot` 都已定义，其中 `brand-*` 是紫色而不是原型的粉色。
-- **配色**：原型是浅色主题，现在的外壳是深色。直接搬过来的白底卡片能正常显示，但直接写在页面背景上的深色文字（如 `text-slate-900`）会看不清，需要统一处理。
+- **Tailwind 是 v4**：没有 `tailwind.config.js`，颜色等主题变量在 `src/app/globals.css` 的 `@theme` 里。原型用到的 `brand-*`、`shadow-soft`、`grid-bg`、`no-scrollbar`、`typing-dot` 都已定义，取值和原型完全一致。
+- **配色**：工作区外壳是浅色（`bg-slate-50` 背景、白色顶栏），和原型的模块页一致，原型里的类名可以直接用。官网和登录页另用一套暖白色（`paper`、`sand-*`、`ink-*`），模块页面不需要用到。
 - **当前用户**：客户端组件里用 `useCurrentUser()`（`src/components/workspace/CurrentUser.tsx`），不要再单独请求 `/auth/me`。
 - **请求接口**：统一用 `src/lib/api/client.ts` 的 `request()`，路径不带 `/api` 前缀；传 `FormData` 可以上传文件。每个模块在 `src/lib/api/` 下建自己的文件（参考 `auth.ts`）。
 - **Next.js 是 16**：开启了 Cache Components，服务端组件里读取 cookie、`searchParams` 等请求数据时必须包在 `<Suspense>` 里，否则构建报错。写代码前先看 `AGENTS.md` 的提示。

@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import "@fontsource-variable/newsreader/opsz.css";
+import "@fontsource/noto-serif-sc/500.css";
+import "lxgw-wenkai-lite-webfont/lxgwwenkailite-regular.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,13 +14,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05060f",
+  themeColor: "#faf9f5",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="grain flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );
 }

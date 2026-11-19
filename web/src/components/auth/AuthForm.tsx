@@ -98,22 +98,22 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
 
   const fieldError = (key: "username" | "password" | "confirm") =>
     errors[key] && (
-      <p className="mt-1.5 text-[11px] text-rose-300" id={`${id}-${key}-error`}>
+      <p className="mt-1.5 text-xs text-rose-600" id={`${id}-${key}-error`}>
         {errors[key]}
       </p>
     );
 
   return (
-    <div className="glass aurora-border relative rounded-3xl p-6 shadow-soft sm:p-8">
-      <div aria-label="登录或注册" className="flex rounded-xl bg-white/5 p-1" role="tablist">
+    <div>
+      <div aria-label="登录或注册" className="flex rounded-lg bg-sand-200/70 p-1" role="tablist">
         {(["login", "register"] as const).map((item) => (
           <button
             key={item}
             aria-selected={mode === item}
             className={
               mode === item
-                ? "flex-1 rounded-lg bg-brand-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition"
-                : "flex-1 rounded-lg px-3 py-2 text-xs font-medium text-slate-400 transition hover:text-white"
+                ? "flex-1 rounded-md bg-white px-3 py-2 text-sm font-medium text-ink-900 shadow-sm transition"
+                : "flex-1 rounded-md px-3 py-2 text-sm text-ink-500 transition hover:text-ink-900"
             }
             onClick={() => switchMode(item)}
             role="tab"
@@ -125,22 +125,22 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
       </div>
 
       <div>
-        <div className="mt-6">
-          <h1 className="text-xl font-bold tracking-tight text-white">{copy.title}</h1>
-          <p className="mt-1.5 text-xs leading-5 text-slate-400">{copy.subtitle}</p>
+        <div className="mt-8">
+          <h1 className="font-serif text-[30px] font-medium tracking-[0.01em] ink-print">{copy.title}</h1>
+          <p className="mt-2 text-sm leading-6 text-ink-500">{copy.subtitle}</p>
         </div>
 
-        <form className="mt-6 space-y-4" noValidate onSubmit={onSubmit}>
+        <form className="mt-8 space-y-5" noValidate onSubmit={onSubmit}>
           <div>
             <label
-              className="mb-1.5 block text-[11px] font-semibold text-slate-300"
+              className="mb-1.5 block text-[13px] font-medium text-ink-700"
               htmlFor={`${id}-username`}
             >
               用户名
             </label>
             <div className="relative">
               <User
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400"
                 size={16}
               />
               <input
@@ -163,14 +163,14 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
 
           <div>
             <label
-              className="mb-1.5 block text-[11px] font-semibold text-slate-300"
+              className="mb-1.5 block text-[13px] font-medium text-ink-700"
               htmlFor={`${id}-password`}
             >
               密码
             </label>
             <div className="relative">
               <Lock
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400"
                 size={16}
               />
               <input
@@ -186,7 +186,7 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
               />
               <button
                 aria-label={showPassword ? "隐藏密码" : "显示密码"}
-                className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-slate-400 transition hover:bg-white/10 hover:text-white"
+                className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-ink-400 transition hover:bg-sand-100 hover:text-ink-900"
                 onClick={() => setShowPassword((v) => !v)}
                 type="button"
               >
@@ -199,14 +199,14 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
           {isRegister && (
             <div>
               <label
-                className="mb-1.5 block text-[11px] font-semibold text-slate-300"
+                className="mb-1.5 block text-[13px] font-medium text-ink-700"
                 htmlFor={`${id}-confirm`}
               >
                 确认密码
               </label>
               <div className="relative">
                 <Lock
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400"
                   size={16}
                 />
                 <input
@@ -227,7 +227,7 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
 
           {errors.form && (
             <p
-              className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-3 py-2.5 text-xs text-rose-200"
+              className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700"
               role="alert"
             >
               {errors.form}
@@ -253,10 +253,10 @@ export function AuthForm({ initialMode }: { initialMode: AuthMode }) {
           </button>
         </form>
 
-        <p className="mt-5 text-center text-[11px] text-slate-400">
+        <p className="mt-6 text-center text-sm text-ink-500">
           {isRegister ? "已有账号？" : "还没有账号？"}
           <button
-            className="ml-1 font-semibold text-brand-200 transition hover:text-white"
+            className="ml-1 font-medium text-ink-900 underline decoration-ink-900/30 underline-offset-4 transition hover:decoration-ink-900"
             onClick={() => switchMode(isRegister ? "login" : "register")}
             type="button"
           >

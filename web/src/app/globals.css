@@ -1,47 +1,61 @@
 @import "tailwindcss";
 
 /*
- * 摘星 · 银河主题
- * 沿用原型里的 brand-* / shadow-soft 等类名，只把取值换成银河配色，
- * 这样从原型搬过来的结构可以直接复用。
+ * 摘星 · 简约白色主题
+ * 官网参考 claude.com 的版式：暖白底、近黑色文字和按钮、细描边、大留白，只用一个点缀色。
+ * brand-*、shadow-soft、grid-bg 等取值和静态原型完全一致，原型页面可以直接搬进工作区。
  */
 @theme {
-  /* 深空背景 */
-  --color-space-950: #05060f;
-  --color-space-900: #0a0c1d;
-  --color-space-800: #11142b;
-  --color-space-700: #1a1e3d;
-  --color-space-600: #262b55;
+  /* 主色：与原型一致的小红书粉红，只做点缀 */
+  --color-brand-50: #fff1f3;
+  --color-brand-100: #ffe2e7;
+  --color-brand-200: #ffc7d1;
+  --color-brand-300: #ff9bac;
+  --color-brand-400: #ff6b85;
+  --color-brand-500: #f44464;
+  --color-brand-600: #dc2749;
+  --color-brand-700: #b91c3f;
 
-  /* 星辉紫（主色） */
-  --color-brand-50: #f3f1ff;
-  --color-brand-100: #e7e3ff;
-  --color-brand-200: #cfc7ff;
-  --color-brand-300: #ada0ff;
-  --color-brand-400: #8b7bff;
-  --color-brand-500: #6f5cf6;
-  --color-brand-600: #5a45e0;
-  --color-brand-700: #4835b8;
-
-  /* 星光金（点缀） */
-  --color-star-100: #fff4d6;
-  --color-star-200: #fde9b0;
-  --color-star-300: #f9d77e;
-  --color-star-400: #f2c14e;
-  --color-star-500: #e0a82e;
+  /* 官网的暖色中性色 */
+  --color-paper: #faf9f5;
+  --color-sand-100: #f0eee6;
+  --color-sand-200: #e8e6dc;
+  --color-sand-300: #d6d3c7;
+  --color-ink-900: #141413;
+  --color-ink-700: #3d3d3a;
+  --color-ink-500: #5e5d59;
+  --color-ink-400: #87867f;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  /* 标题用的衬线体：思源宋体（@fontsource 自托管，按需加载用到的字） */
+  /*
+   * 标题：西文和数字用 Newsreader，中文用思源宋体。
+   * 字体还没下载完时，Windows 上先用雅黑顶替（默认的宋体回退太生硬），切换时不那么扎眼。
+   */
+  --font-serif: "Newsreader Variable", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong",
+    "Microsoft YaHei", serif;
+  /* 点缀：霞鹜文楷，带一点手写感，只用在少量短句上 */
+  --font-hand: "LXGW WenKai Lite", "Kaiti SC", "STKaiti", "KaiTi", serif;
 
-  --shadow-soft: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 0 1px rgba(139, 123, 255, 0.25),
-    0 18px 50px -18px rgba(111, 92, 246, 0.55);
+  /*
+   * 分层阴影：一层贴边的细影 + 一层柔和的远影。
+   * 全站只有一个光源——右上方窗户照进来的暖光，所以影子都略微偏向左下、带一点暖褐色，
+   * 和首屏的树影方向一致。
+   */
+  --shadow-card: 0 1px 1px rgba(60, 42, 24, 0.05), -2px 3px 8px rgba(60, 42, 24, 0.05),
+    -8px 16px 34px -14px rgba(60, 42, 24, 0.25);
+  --shadow-float: 0 1px 2px rgba(60, 42, 24, 0.07), -4px 10px 22px -6px rgba(60, 42, 24, 0.14),
+    -14px 34px 64px -24px rgba(60, 42, 24, 0.38);
+
+  /* 全站统一的过渡节奏：稍长一点、收尾更柔和 */
+  --default-transition-duration: 220ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-soft: -6px 18px 40px -24px rgba(60, 42, 24, 0.3);
+  --shadow-lift: 0 24px 60px -30px rgba(244, 68, 100, 0.35);
 
   --animate-fade-in: fadeIn 0.35s ease-out both;
-  --animate-float: float 7s ease-in-out infinite;
-  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
-  --animate-drift: drift 26s ease-in-out infinite alternate;
-  --animate-travel: travel 4.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   @keyframes fadeIn {
     from {
@@ -53,58 +67,84 @@
       transform: none;
     }
   }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
-  @keyframes drift {
-    from {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    to {
-      transform: translate3d(70px, -50px, 0) scale(1.18);
-    }
-  }
-  @keyframes travel {
-    0% {
-      left: -15%;
-      opacity: 0;
-    }
-    12%,
-    88% {
-      opacity: 1;
-    }
-    100% {
-      left: 100%;
-      opacity: 0;
-    }
-  }
-  @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 0.35;
-      transform: scale(0.85);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-  }
 }
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
+  color-scheme: light;
+  /* 始终给滚动条留位置，弹窗锁滚动时页面不会左右跳 */
+  scrollbar-gutter: stable;
+}
+
+/* 弹窗打开时锁住背后的页面 */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/*
+ * 弹窗的打开 / 关闭过渡：淡入并轻微上浮，遮罩同步淡入。
+ * 关闭动画依赖 allow-discrete（新版 Chrome / Edge / Safari），不支持的浏览器直接关闭。
+ */
+dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transition:
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}
+dialog::backdrop {
+  background-color: rgb(20 20 19 / 0);
+  backdrop-filter: blur(0);
+  transition:
+    background-color 0.28s ease-out,
+    backdrop-filter 0.28s ease-out,
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+dialog[open]::backdrop {
+  background-color: rgb(20 20 19 / 0.45);
+  backdrop-filter: blur(4px);
+}
+@starting-style {
+  dialog[open]::backdrop {
+    background-color: rgb(20 20 19 / 0);
+    backdrop-filter: blur(0);
+  }
 }
 
 body {
-  background: var(--color-space-950);
-  color: #e2e8f0;
+  background-color: var(--color-paper);
+  color: var(--color-ink-900);
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+
+@layer base {
+  /*
+   * 标题：palt 让中文标点按实际宽度排（「，」不再占满一个字），断行尽量均匀；
+   * 段落避免最后一行只剩一两个字。
+   */
+  h1,
+  h2,
+  h3 {
+    font-feature-settings: "palt" 1, "kern" 1;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 }
 
 /* Edge 会给密码框自带一个「显示密码」按钮，和我们自己的重复了，隐藏掉 */
@@ -114,53 +154,18 @@ input::-ms-clear {
 }
 
 ::selection {
-  background: rgba(139, 123, 255, 0.45);
-  color: #fff;
+  background: var(--color-brand-100);
+  color: var(--color-ink-900);
 }
 
-/* 玻璃卡片：深空上的半透明面板 */
-@utility glass {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.07),
-    rgba(255, 255, 255, 0.025)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(14px);
-}
-
-/* 标题里的星光渐变字 */
-@utility text-starlight {
-  background: linear-gradient(
-    100deg,
-    #fff4d6 0%,
-    #f9d77e 25%,
-    #ada0ff 50%,
-    #f9d77e 75%,
-    #fff4d6 100%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: starlight 7s linear infinite;
-}
-
-@keyframes starlight {
-  to {
-    background-position: -200% 0;
-  }
-}
-
-/* 星图网格（对应原型的 grid-bg） */
+/* 以下三个工具类和原型里的同名样式一致 */
 @utility grid-bg {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.055) 1px, transparent 1px);
   background-size: 30px 30px;
 }
 
-/* 原型（AI 创作页）里的「正在输入」三个点 */
 @utility typing-dot {
   display: inline-block;
   width: 4px;
@@ -189,6 +194,15 @@ input::-ms-clear {
   }
 }
 
+/*
+ * 纸张颗粒：叠在底色上的极淡噪点，让大面积的米白、沙色不那么「平」。
+ * 只是背景图，不盖在照片和文字上，也不影响滚动性能。
+ */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http:%2F%2Fwww.w3.org%2F2000%2Fsvg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .08 0 0 0 0 .07 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.09'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -196,123 +210,263 @@ input::-ms-clear {
   }
 }
 
-/* ---------- 动效组件 ---------- */
-
-@property --angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes spin-angle {
-  to {
-    --angle: 360deg;
-  }
-}
-
 @layer components {
-  /* 流光边框：一束星光沿着边框绕行 */
-  .aurora-border::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border-radius: inherit;
-    padding: 1.5px;
-    background: conic-gradient(
-      from var(--angle),
-      transparent 0%,
-      transparent 52%,
-      #8b7bff 68%,
-      #fde9b0 80%,
-      #7fc0ff 90%,
-      transparent 100%
-    );
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: spin-angle 7s linear infinite;
-    pointer-events: none;
+  /*
+   * 标题的「墨色」：上深下浅的墨色渐变，下沿一道纸面高光，像印在纸上的字。
+   * 用了这个类的标题不要再加 text-ink-900（颜色要透明才能露出渐变）。
+   */
+  .ink-print {
+    background-image:
+      linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(176, 120, 56, 0.9) 47%,
+        rgba(214, 160, 90, 0.95) 50%,
+        rgba(176, 120, 56, 0.9) 53%,
+        transparent 60%
+      ),
+      linear-gradient(180deg, #141413 25%, #4a4843 100%);
+    background-size:
+      300% 100%,
+      100% 100%;
+    background-repeat: no-repeat;
+    /* 高光平时停在字的左侧外面，看不见 */
+    background-position:
+      150% 0,
+      0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
+  }
+  /* 标题滚进视口时（ScrollReveal 加上 is-visible），像接住一道光一样扫过一次 */
+  html.reveal-on .is-visible .ink-print,
+  html.reveal-on .ink-print.is-visible {
+    animation: ink-catch 1.7s cubic-bezier(0.45, 0, 0.25, 1) 0.3s both;
   }
 
-  /* 卡片聚光：光斑和描边跟着鼠标走（坐标由 InteractionEffects 写入） */
-  .spotlight {
-    position: relative;
+
+  /* 首屏照片墙：每列匀速滚动（内容排了两遍，平移 -50% 正好一个周期），鼠标停在列上时这一列暂停 */
+  .wall-col {
+    animation: wall-scroll var(--wall-duration, 60s) linear infinite;
+    will-change: transform;
   }
-  .spotlight::before,
-  .spotlight::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
+  .wall-col-down {
+    animation-direction: reverse;
   }
-  .spotlight::after {
-    background: radial-gradient(
-      380px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(173, 160, 255, 0.14),
-      transparent 65%
-    );
+  .wall-col:hover {
+    animation-play-state: paused;
   }
-  .spotlight::before {
-    z-index: 1;
-    padding: 1px;
-    background: radial-gradient(
-      260px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(253, 233, 176, 0.85),
-      rgba(173, 160, 255, 0.35) 45%,
-      transparent 70%
-    );
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-  .spotlight:hover::before,
-  .spotlight:hover::after {
-    opacity: 1;
+  /* 照片墙入场：从稍大、透明，慢慢落定 */
+  .hero-wall-in {
+    animation: hero-wall-in 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
-  /* 主按钮悬停时扫过一道光 */
-  .btn-shine {
-    position: relative;
-    overflow: hidden;
+  /* 树影随风摇：近处快一点、远处慢一点，方向相反，层次更自然 */
+  .leaf-sway-near {
+    transform-origin: 100% 0%;
+    animation: leaf-sway 9s ease-in-out infinite alternate;
+    will-change: transform;
   }
-  .btn-shine::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: -60%;
-    width: 40%;
-    transform: skewX(-20deg);
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.7),
-      transparent
-    );
-    pointer-events: none;
-  }
-  .btn-shine:hover::after {
-    left: 125%;
-    transition: left 0.7s ease;
+  .leaf-sway-far {
+    transform-origin: 100% 0%;
+    animation: leaf-sway 14s ease-in-out -5s infinite alternate-reverse;
+    will-change: transform;
   }
 
-  /* 滚动浮现：只有 InteractionEffects 启动后（html.reveal-on）才会先隐藏 */
+  /* 首屏大标题：墨色字上每隔一会儿缓缓扫过一道暖金色的光（白色的光在白底上会把字「抹掉」） */
+  .ink-sheen {
+    background-image:
+      linear-gradient(
+        105deg,
+        transparent 38%,
+        rgba(168, 112, 50, 0.85) 46%,
+        rgba(212, 158, 88, 0.95) 50%,
+        rgba(168, 112, 50, 0.85) 54%,
+        transparent 62%
+      ),
+      linear-gradient(180deg, #141413 30%, #4a4843 100%);
+    background-size:
+      260% 100%,
+      100% 100%;
+    background-repeat: no-repeat;
+    background-position:
+      160% 0,
+      0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: ink-sheen 9s cubic-bezier(0.45, 0, 0.25, 1) 2.4s infinite;
+    /* 行内文字的背景区只有字身那么高，衬线字的顶部横画会被切掉一截，上下各留一点余量 */
+    padding-block: 0.14em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* 「摘下的星」：深玫瑰色的墨，外面一圈很淡的光 */
+  .ink-star {
+    background-image: linear-gradient(180deg, #3a1e26 10%, #b4304d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 22px rgba(244, 68, 100, 0.28));
+    padding-block: 0.14em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* 一颗会慢慢闪的小星光 */
+  .twinkle {
+    animation: twinkle 3.6s ease-in-out infinite;
+  }
+
+  /* 插画面板上的手绘曲线纹理（参考 claude.com 的彩色面板） */
+  .texture-lines {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http:%2F%2Fwww.w3.org%2F2000%2Fsvg' width='360' height='360' fill='none' stroke='white' stroke-opacity='.55' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M-20 60c40-30 70 25 110 0s60-45 100-10 70 30 110 5 60-20 90 5'/%3E%3Cpath d='M-10 170c30 20 60-35 100-15s45 50 85 30 55-60 95-40 55 35 100 15'/%3E%3Cpath d='M20 290c25-35 70-20 90 10s55 35 90 5 45-55 85-35 50 40 90 25'/%3E%3Cpath d='M240 -10c-20 40 30 60 10 100s-50 45-20 85'/%3E%3Cpath d='M90 230c15-25 40-30 60-10'/%3E%3C/svg%3E");
+    background-size: 360px 360px;
+  }
+
+  /* 首屏文字入场：上浮 + 去模糊，延迟由 style 的 animation-delay 控制 */
+  .hero-rise {
+    animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  /* 标题下划线：入场时一笔画出 */
+  .hero-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: hero-draw 0.9s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+  }
+
+  /* 无缝横向滚动（内容需要重复两遍） */
+  .marquee {
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee-reverse {
+    animation-direction: reverse;
+  }
+  .marquee-host:hover .marquee {
+    animation-play-state: paused;
+  }
+
+  /* 滚动浮现：只有 ScrollReveal 启动后（html.reveal-on）才会先隐藏，幅度很小 */
   html.reveal-on [data-reveal] {
     opacity: 0;
-    transform: translateY(26px) scale(0.985);
+    transform: translateY(14px);
     transition:
-      opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
-      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   html.reveal-on [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes hero-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes wall-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes hero-wall-in {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ink-catch {
+  from {
+    background-position:
+      150% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      -50% 0,
+      0 0;
+  }
+}
+
+@keyframes leaf-sway {
+  0% {
+    transform: rotate(-1.3deg) translate3d(-8px, 3px, 0) scale(1.02);
+  }
+  35% {
+    transform: rotate(0.4deg) translate3d(2px, -1px, 0) scale(1.02);
+  }
+  60% {
+    transform: rotate(-0.2deg) translate3d(-2px, 1px, 0) scale(1.02);
+  }
+  100% {
+    transform: rotate(1.4deg) translate3d(10px, -4px, 0) scale(1.02);
+  }
+}
+
+@keyframes ink-sheen {
+  0% {
+    background-position:
+      160% 0,
+      0 0;
+  }
+  45%,
+  100% {
+    background-position:
+      -60% 0,
+      0 0;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+}
+
+@keyframes pick-spin {
+  from {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.3);
+  }
+  to {
     opacity: 1;
     transform: none;
   }
