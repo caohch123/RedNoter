@@ -43,3 +43,9 @@ next-env.d.ts
 
 # local mock data
 /.mock/
+
+# Collected post images and local IDE state
+/public/imported-media/
+/.vs/
+/.vscode/
+/.idea/

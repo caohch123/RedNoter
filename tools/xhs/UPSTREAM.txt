@@ -1,0 +1,5 @@
+Repository: https://github.com/NanmiCoder/MediaCrawler
+Commit: 4d629b52eddef9c53b5e9a52b76ec4a64383b494
+License: MediaCrawler/LICENSE
+Local modifications: config/base_config.py; media_platform/xhs/core.py (bounded detail counts, deduplication, homepage recommendation capture, web progress events); store/xhs/__init__.py (public author nickname).
+Web integration: web/src/app/api/crawl (relative to project root), web-worker.mjs and convert_xhs.py. Browser collection supports limits of 10 or 100; the standalone PowerShell command retains its original 5-post default.

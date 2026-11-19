@@ -16,3 +16,7 @@ npm run dev
 ```
 
 打开 http://localhost:3000 。后端未接入时，登录使用本地 mock 接口。
+
+## 采集与图片清理工具
+
+采集工具已包含在 tools/xhs。环境准备、初始化、采集命令和图片删除功能说明见 [工具运行说明](tools/README.md)。
