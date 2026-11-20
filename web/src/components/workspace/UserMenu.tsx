@@ -18,17 +18,17 @@ export function UserMenu() {
   return (
     <div className="flex items-center gap-3">
       {user ? (
-        <span className="flex items-center gap-2 text-sm text-slate-200">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-xs font-bold text-white">
+        <span className="flex items-center gap-2 text-sm text-slate-700">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-50 text-xs font-bold text-brand-600">
             {user.username.slice(0, 1).toUpperCase()}
           </span>
           <span className="hidden max-w-[10rem] truncate sm:inline">{user.username}</span>
         </span>
       ) : (
-        <span aria-hidden="true" className="h-8 w-24 animate-pulse rounded-full bg-white/10" />
+        <span aria-hidden="true" className="h-8 w-24 animate-pulse rounded-full bg-slate-100" />
       )}
       <button
-        className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/25 hover:bg-white/5 hover:text-white"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
         onClick={logout}
         type="button"
       >

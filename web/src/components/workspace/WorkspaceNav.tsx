@@ -21,8 +21,8 @@ export function WorkspaceNav() {
             aria-current={active ? "page" : undefined}
             className={
               active
-                ? "shrink-0 rounded-lg bg-brand-500/20 px-3.5 py-2 text-sm font-semibold text-brand-100"
-                : "shrink-0 rounded-lg px-3.5 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"
+                ? "shrink-0 rounded-lg bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand-600"
+                : "shrink-0 rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
             }
             href={item.href}
           >

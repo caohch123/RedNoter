@@ -12,7 +12,7 @@ const sections: { id: MaterialSection; label: string }[] = [
   { id: "content", label: "正文" },
   { id: "images", label: "图片" },
 ];
-const secondaryButton = "rounded-xl border border-white/20 px-3 py-2 text-sm text-slate-300 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-purple-400";
+const secondaryButton = "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-brand-400";
 
 export default function Page() {
   const router = useRouter();
@@ -88,8 +88,8 @@ export default function Page() {
 
   return (
     <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-10">
-      <h1 className="text-3xl font-bold text-white">素材库</h1>
-      <p className="mt-3 text-slate-400">
+      <h1 className="text-3xl font-bold text-slate-900">素材库</h1>
+      <p className="mt-3 text-slate-500">
         收藏后自动整理标题、正文和图片，在原帖中查看详情或取消收藏。
       </p>
 
@@ -97,25 +97,25 @@ export default function Page() {
         {sections.map(item => (
           <button key={item.id} type="button" aria-pressed={section === item.id}
             onClick={() => setSection(item.id)}
-            className={"rounded-xl px-5 py-2.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-purple-400 " +
-              (section === item.id ? "bg-purple-600 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10")}>
+            className={"rounded-xl px-5 py-2.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-brand-400 " +
+              (section === item.id ? "bg-brand-600 text-white" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50")}>
             {item.label}{isLoaded ? "（" + counts[item.id] + "）" : ""}
           </button>
         ))}
       </div>
 
-      {storageError && <p role="alert" className="mt-4 text-red-400">{storageError}</p>}
+      {storageError && <p role="alert" className="mt-4 text-red-600">{storageError}</p>}
 
-      {!isLoaded ? <p className="mt-8 text-slate-400">正在读取收藏……</p> : (
+      {!isLoaded ? <p className="mt-8 text-slate-500">正在读取收藏……</p> : (
         <section aria-label={sections.find(item => item.id === section)!.label + "素材"}>
-          <p aria-live="polite" className="mt-6 text-sm text-slate-400">
+          <p aria-live="polite" className="mt-6 text-sm text-slate-500">
             {section === "posts" && "共收藏 " + counts.posts + " 篇帖子"}
             {section === "titles" && "共 " + counts.titles + " 条标题素材"}
             {section === "content" && "共 " + counts.content + " 条正文素材，可带入 AI 创作进行仿写"}
             {section === "images" && "共 " + counts.images + " 张图片，点击图片可放大并浏览同一原帖的其他图片"}
           </p>
           {counts[section] === 0 ? (
-            <p className="mt-8 text-slate-400">{emptyMessages[section]}</p>
+            <p className="mt-8 text-slate-500">{emptyMessages[section]}</p>
           ) : (
             <div className="mt-6 grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {section === "posts" && savedPosts.map(post => (
@@ -123,35 +123,35 @@ export default function Page() {
               ))}
 
               {section === "titles" && titlePosts.map(post => (
-                <article key={post.id} className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <h2 className="whitespace-pre-wrap break-words text-lg font-semibold text-white [overflow-wrap:anywhere]">{post.title}</h2>
-                  <p className="mt-4 truncate text-sm text-slate-400">作者：{post.author}</p>
+                <article key={post.id} className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <h2 className="whitespace-pre-wrap break-words text-lg font-semibold text-slate-900 [overflow-wrap:anywhere]">{post.title}</h2>
+                  <p className="mt-4 truncate text-sm text-slate-500">作者：{post.author}</p>
                   <div className="mt-4">{originalButton(post)}</div>
                 </article>
               ))}
 
               {section === "content" && contentPosts.map(post => (
-                <article key={post.id} className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <p className="max-h-80 overflow-y-auto whitespace-pre-wrap break-words leading-7 text-slate-200 [overflow-wrap:anywhere]">{post.content}</p>
-                  <p className="mt-4 truncate text-sm text-slate-400">作者：{post.author}</p>
+                <article key={post.id} className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <p className="max-h-80 overflow-y-auto whitespace-pre-wrap break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{post.content}</p>
+                  <p className="mt-4 truncate text-sm text-slate-500">作者：{post.author}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <button type="button" onClick={() => handleRewrite(post.content)}
-                      className="rounded-xl bg-purple-600 px-3 py-2 text-sm text-white hover:bg-purple-500 focus-visible:outline-2 focus-visible:outline-purple-400">用于仿写</button>
+                      className="rounded-xl bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-brand-400">用于仿写</button>
                     {originalButton(post)}
                   </div>
                 </article>
               ))}
 
               {section === "images" && images.map(({ post, src, imageIndex }) => (
-                <article key={post.id + ":" + imageIndex} className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                <article key={post.id + ":" + imageIndex} className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                   <button type="button" onClick={() => setPreview({ post, imageIndex })}
                     aria-label={"放大图片：" + post.title + "，第 " + (imageIndex + 1) + " 张"}
-                    className="block aspect-[3/4] w-full overflow-hidden bg-black/20 focus-visible:outline-2 focus-visible:outline-purple-400">
+                    className="block aspect-[3/4] w-full overflow-hidden bg-slate-100 focus-visible:outline-2 focus-visible:outline-brand-400">
                     <PostImage src={src} alt={post.title + " · 图片 " + (imageIndex + 1)} cover />
                   </button>
                   <div className="p-4">
-                    <h2 className="line-clamp-2 break-words text-sm text-slate-200">{post.title}</h2>
-                    <p className="mt-2 text-sm text-slate-400">原帖图片 {imageIndex + 1} / {post.images!.length}</p>
+                    <h2 className="line-clamp-2 break-words text-sm text-slate-700">{post.title}</h2>
+                    <p className="mt-2 text-sm text-slate-500">原帖图片 {imageIndex + 1} / {post.images!.length}</p>
                     <div className="mt-3">{originalButton(post)}</div>
                   </div>
                 </article>

@@ -7,8 +7,8 @@ import { mergeImportedPosts, parseImportedPosts, readImportedPosts, saveImported
 import { cleanupPendingImages } from "@/lib/media-cleanup";
 
 const ACTIVE_KEY = "rednoter:crawl-job";
-// 原生下拉菜单在 Windows 上可能使用浅色背景，显式设置选项颜色以保证文字可见。
-const SELECT_COLORS = { backgroundColor: "#0f172a", color: "#f8fafc" };
+// 原生下拉菜单在不同系统上的默认配色不一样，显式设置选项颜色以保证文字可见。
+const SELECT_COLORS = { backgroundColor: "#ffffff", color: "#0f172a" };
 
 async function api(url: string, options?: RequestInit) {
   const response = await fetch(url, options);
@@ -124,31 +124,31 @@ export function PostCollector({ disabled, onImported }: { disabled: boolean; onI
     } catch (error) { setError(error instanceof Error ? error.message : "停止失败"); }
   }
 
-  return <section className="mt-6 rounded-2xl border border-purple-400/20 bg-white/5 p-5">
-    <h2 className="text-lg font-semibold text-white">采集小红书帖子</h2>
-    <p className="mt-2 text-sm text-slate-400">推荐流采集来自登录账号的小红书首页。开始后请在弹出的浏览器中扫码登录或完成验证，结果会自动加入列表。</p>
+  return <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <h2 className="text-lg font-semibold text-slate-900">采集小红书帖子</h2>
+    <p className="mt-2 text-sm text-slate-500">推荐流采集来自登录账号的小红书首页。开始后请在弹出的浏览器中扫码登录或完成验证，结果会自动加入列表。</p>
     <form className="mt-4 flex flex-wrap items-end gap-4" onSubmit={event => { event.preventDefault(); void start(); }}>
-      <label className="text-sm text-slate-300">采集方式
-        <select aria-label="采集方式" value={mode} disabled={running} onChange={event => setMode(event.target.value as CrawlMode)} style={{ ...SELECT_COLORS, colorScheme: "dark" }} className="mt-2 block rounded-lg border border-white/20 bg-slate-900 p-2 text-white">
+      <label className="text-sm text-slate-600">采集方式
+        <select aria-label="采集方式" value={mode} disabled={running} onChange={event => setMode(event.target.value as CrawlMode)} style={{ ...SELECT_COLORS, colorScheme: "light" }} className="mt-2 block rounded-lg border border-slate-200 bg-white p-2 text-slate-900">
           <option value="search" style={SELECT_COLORS}>按关键词搜索</option><option value="homefeed" style={SELECT_COLORS}>随机采集（首页推荐流）</option>
         </select>
       </label>
-      <label className="text-sm text-slate-300">采集数量
-        <select aria-label="采集数量" value={count} disabled={running} onChange={event => setCount(Number(event.target.value) as 10 | 100)} style={{ ...SELECT_COLORS, colorScheme: "dark" }} className="mt-2 block rounded-lg border border-white/20 bg-slate-900 p-2 text-white">
+      <label className="text-sm text-slate-600">采集数量
+        <select aria-label="采集数量" value={count} disabled={running} onChange={event => setCount(Number(event.target.value) as 10 | 100)} style={{ ...SELECT_COLORS, colorScheme: "light" }} className="mt-2 block rounded-lg border border-slate-200 bg-white p-2 text-slate-900">
           <option value={10} style={SELECT_COLORS}>最多 10 条</option><option value={100} style={SELECT_COLORS}>最多 100 条</option>
         </select>
       </label>
-      {mode === "search" && <label className="min-w-0 flex-1 text-sm text-slate-300">关键词
-        <input aria-label="采集关键词" required maxLength={80} value={keyword} disabled={running} onChange={event => setKeyword(event.target.value)} placeholder="例如：通勤穿搭" className="mt-2 block w-full rounded-lg border border-white/20 bg-black/20 p-2 text-white" />
+      {mode === "search" && <label className="min-w-0 flex-1 text-sm text-slate-600">关键词
+        <input aria-label="采集关键词" required maxLength={80} value={keyword} disabled={running} onChange={event => setKeyword(event.target.value)} placeholder="例如：通勤穿搭" className="mt-2 block w-full rounded-lg border border-slate-200 bg-white p-2 text-slate-900" />
       </label>}
-      <button type="submit" disabled={disabled || running || ready !== true || pendingResult !== null} className="rounded-lg bg-purple-600 px-4 py-2 text-white disabled:opacity-40">{running ? "正在采集…" : "开始采集"}</button>
-      {running && <button type="button" onClick={() => void stop()} disabled={!jobId} className="rounded-lg border border-white/20 px-4 py-2 text-slate-300">停止采集</button>}
+      <button type="submit" disabled={disabled || running || ready !== true || pendingResult !== null} className="rounded-lg bg-brand-600 px-4 py-2 text-white disabled:opacity-40">{running ? "正在采集…" : "开始采集"}</button>
+      {running && <button type="button" onClick={() => void stop()} disabled={!jobId} className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-600">停止采集</button>}
     </form>
-    {ready === false && <p className="mt-3 text-sm text-amber-300">请先在项目根目录运行 tools/xhs/install.ps1 初始化采集环境，完成后刷新页面。</p>}
-    <p className="mt-3 text-xs text-slate-400">100 条需要更长时间；实际数量取决于可访问的有效帖子。列表最多保留 100 条，超出会淘汰最早加入的记录。</p>
-    {job && <div role="status" className="mt-4 text-sm text-slate-300"><p>{job.message}</p><p className="mt-1">已成功获取 {job.received} / {job.count} 条 · 已尝试 {job.attempted ?? job.received} 条 · 失败 {job.failed ?? 0} 条{job.state === "converting" ? " · 正在下载图片" : ""}</p></div>}
-    {message && <p role="status" className="mt-3 text-sm text-emerald-300">{message}</p>}
-    {error && <p role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
-    {pendingResult !== null && <button type="button" onClick={() => void applyResult(pendingResult)} className="mt-3 rounded-lg bg-purple-600 px-3 py-2 text-sm text-white">重试加入列表</button>}
+    {ready === false && <p className="mt-3 text-sm text-amber-600">请先在项目根目录运行 tools/xhs/install.ps1 初始化采集环境，完成后刷新页面。</p>}
+    <p className="mt-3 text-xs text-slate-500">100 条需要更长时间；实际数量取决于可访问的有效帖子。列表最多保留 100 条，超出会淘汰最早加入的记录。</p>
+    {job && <div role="status" className="mt-4 text-sm text-slate-600"><p>{job.message}</p><p className="mt-1">已成功获取 {job.received} / {job.count} 条 · 已尝试 {job.attempted ?? job.received} 条 · 失败 {job.failed ?? 0} 条{job.state === "converting" ? " · 正在下载图片" : ""}</p></div>}
+    {message && <p role="status" className="mt-3 text-sm text-emerald-600">{message}</p>}
+    {error && <p role="alert" className="mt-3 text-sm text-red-600">{error}</p>}
+    {pendingResult !== null && <button type="button" onClick={() => void applyResult(pendingResult)} className="mt-3 rounded-lg bg-brand-600 px-3 py-2 text-sm text-white">重试加入列表</button>}
   </section>;
 }

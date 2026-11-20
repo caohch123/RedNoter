@@ -95,18 +95,18 @@ const visiblePosts = selectedCategoryId === null
   : [];
   return (
     <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-10">
-      <h1 className="text-3xl font-bold text-white">话题追踪</h1>
+      <h1 className="text-3xl font-bold text-slate-900">话题追踪</h1>
 
-      <p className="mt-3 text-slate-400">
+      <p className="mt-3 text-slate-500">
         发现感兴趣的帖子，收集创作灵感。
       </p>{categoryError && (
-  <p role="alert" className="mt-4 text-red-400">
+  <p role="alert" className="mt-4 text-red-600">
     {categoryError}
   </p>
 )}
 
 {!categoriesLoaded ? (
-  <p className="mt-6 text-slate-400">正在读取分类……</p>
+  <p className="mt-6 text-slate-500">正在读取分类……</p>
 ) : (
   <div
     role="group"
@@ -119,8 +119,8 @@ const visiblePosts = selectedCategoryId === null
       onClick={() => setSelectedCategoryId(null)}
       className={`rounded-xl px-4 py-2 text-sm ${
         selectedCategoryId === null
-          ? "bg-purple-600 text-white"
-          : "bg-white/5 text-slate-300 hover:bg-white/10"
+          ? "bg-brand-600 text-white"
+          : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
       }`}
     >
       全部
@@ -134,8 +134,8 @@ const visiblePosts = selectedCategoryId === null
         onClick={() => setSelectedCategoryId(category.id)}
         className={`rounded-xl px-4 py-2 text-sm ${
           selectedCategoryId === category.id
-            ? "bg-purple-600 text-white"
-            : "bg-white/5 text-slate-300 hover:bg-white/10"
+            ? "bg-brand-600 text-white"
+            : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
         }`}
       >
         {category.name}
@@ -144,7 +144,7 @@ const visiblePosts = selectedCategoryId === null
   </div>
 )}
 
-{importError && <p role="alert" className="mt-4 text-red-400">{importError}</p>}
+{importError && <p role="alert" className="mt-4 text-red-600">{importError}</p>}
 <PostCollector disabled={!importsLoaded} onImported={setImportedPosts} />
 <MediaCleanup disabled={!importsLoaded} />
 <CategoryManager
@@ -159,18 +159,18 @@ const visiblePosts = selectedCategoryId === null
     }
   }}
 />
-<p className="mt-4 text-sm text-slate-400">
+<p className="mt-4 text-sm text-slate-500">
   当前分类：{selectedCategoryId === null ? "全部" : selectedCategory?.name ?? "分类不可用"} · 显示 {visiblePosts.length} / {allPosts.length} 篇帖子
 </p>
 
 {selectedCategory && (
-  <p className="mt-2 text-sm text-slate-400">
+  <p className="mt-2 text-sm text-slate-500">
     匹配关键词：{selectedCategory.keywords.join("、")}（任意命中；检查标题、正文和原帖话题标签，图片不参与匹配）
   </p>
 )}
 
 {visiblePosts.length === 0 && (
-  <p className="mt-8 text-slate-400">
+  <p className="mt-8 text-slate-500">
     {selectedCategoryId === null
       ? "暂无帖子，请先使用上方的采集功能获取帖子。"
       : "暂无符合该分类关键词的帖子，可以切换到“全部”。"}
@@ -178,7 +178,7 @@ const visiblePosts = selectedCategoryId === null
 )}
 
       {storageError && (
-       <p role="alert" className="mt-4 text-red-400">
+       <p role="alert" className="mt-4 text-red-600">
        {storageError}
        </p>
 )}
@@ -189,7 +189,7 @@ const visiblePosts = selectedCategoryId === null
       badge="帖子数据"
       actions={<button type="button" disabled={!isLoaded} onClick={() => toggleSave(post)}
         aria-pressed={savedIds.includes(post.id)}
-        className="rounded-xl bg-purple-600 px-3 py-2 text-sm text-white hover:bg-purple-500 disabled:opacity-50">
+        className="rounded-xl bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700 disabled:opacity-50">
         {savedIds.includes(post.id) ? "已收藏 · 点击取消" : "收藏到素材库"}
       </button>}
     />
