@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Draft {
+  id        String   @id @default(uuid()) @db.Uuid
+  ownerId   String
+  revision  Int      @default(0)
+  data      Json
+  name      String?
+  savedData Json?
+  savedName String?
+  savedTitle String?
+  savedAt   DateTime?
+  pinnedAt  DateTime?
+  deletedAt DateTime?
+  restoredRevision Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  runs      Run[]
+  media     Media[]
+  finalized Finalization[]
+  mediaBrief MediaBrief?
+  creationPlan CreationPlan?
+  attachments ChatAttachment[]
+  workspaceVersion Int @default(0)
+  workspaceFiles WorkspaceFile[]
+  piSessions PiSession[]
+  @@index([ownerId, updatedAt])
+  @@index([ownerId, deletedAt, pinnedAt, savedAt, id])
+}
+
+/// 草稿与 Pi 原生会话的归属映射。一个草稿可以有多个会话（根会话、分叉、克隆）。
+model PiSession {
+  id              String   @id @default(uuid()) @db.Uuid
+  draftId         String   @db.Uuid
+  draft           Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  ownerId         String
+  piSessionId     String
+  sessionFile     String?
+  kind            String   @default("root")
+  parentSessionId String?  @db.Uuid
+  parent          PiSession? @relation("PiSessionTree", fields: [parentSessionId], references: [id], onDelete: SetNull)
+  children        PiSession[] @relation("PiSessionTree")
+  forkEntryId     String?
+  currentLeafId   String?
+  label           String?
+  cursor          BigInt   @default(0)
+  active          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  requests        PiRequest[]
+  @@unique([draftId, piSessionId])
+  @@index([draftId, updatedAt])
+}
+
+/// 请求幂等表：同一 requestId 重复提交只执行一次。
+model PiRequest {
+  id          String    @id @db.Uuid
+  sessionId   String    @db.Uuid
+  session     PiSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  draftId     String    @db.Uuid
+  mode        String
+  fingerprint String
+  status      String    @default("accepted")
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@index([draftId, createdAt])
+}
+
+model WorkspaceFile {
+  id String @id @default(uuid()) @db.Uuid
+  draftId String @db.Uuid
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  name String
+  mime String
+  attachmentId String? @db.Uuid
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  versions WorkspaceVersion[]
+  @@index([draftId, deletedAt])
+}
+
+model WorkspaceVersion {
+  id String @id @default(uuid()) @db.Uuid
+  fileId String @db.Uuid
+  file WorkspaceFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  version Int
+  objectKey String
+  size Int
+  draftRevision Int
+  runId String? @db.Uuid
+  outputIndex Int?
+  createdAt DateTime @default(now())
+  @@unique([fileId, version])
+  @@unique([runId, outputIndex])
+}
+
+model CreationPlan {
+  draftId String @id @db.Uuid
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  enabled Boolean @default(true)
+  version Int @default(1)
+  latestRunId String? @db.Uuid
+  executionRunId String? @db.Uuid
+  approved Boolean @default(false)
+  media Json
+}
+
+model ChatAttachment {
+  id String @id @default(uuid()) @db.Uuid
+  draftId String @db.Uuid
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  name String
+  mime String
+  size Int
+  @@index([draftId])
+}
+
+model MediaBrief {
+  id        String @id @default(uuid()) @db.Uuid
+  draftId   String @unique @db.Uuid
+  draft     Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  version   Int @default(1)
+  data      Json
+  runId     String? @db.Uuid
+}
+
+model Run {
+  toolProgress Json?
+  id           String   @id @db.Uuid
+  submissionOrder BigInt @unique @default(autoincrement())
+  requestFingerprint String?
+  draftId      String   @db.Uuid
+  draft        Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  baseRevision Int
+  kind         String
+  status       String   @default("queued")
+  input        Json
+  prompt       String?
+  result       Json?
+  error        String?
+  failureDetail Json?
+  resumeCount Int @default(0)
+  profileId    String?  @db.Uuid
+  profile      ModelProfile? @relation(fields: [profileId], references: [id])
+  providerTaskId String?
+  nextPollAt   DateTime?
+  appliedRevision Int?
+  undoData     Json?
+  undoneAt     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@index([draftId, createdAt])
+  @@index([draftId, baseRevision, submissionOrder])
+  @@index([status, updatedAt])
+}
+
+model ModelProfile {
+  toolsVerified Boolean @default(false)
+  id          String @id @default(uuid()) @db.Uuid
+  version     BigInt @unique @default(autoincrement())
+  capability  String
+  provider    String
+  baseUrl     String
+  modelId     String
+  contextWindow Int?
+  encryptedKey String
+  updatedBy   String
+  createdAt   DateTime @default(now())
+  runs        Run[]
+  @@index([capability, version])
+}
+
+model Media {
+  id        String   @id @db.Uuid
+  draftId   String   @db.Uuid
+  draft     Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  objectKey String   @unique
+  mime      String
+  createdAt DateTime @default(now())
+  finalized Finalization[] @relation("FinalCover")
+  videos    Finalization[] @relation("FinalVideo")
+}
+
+model Finalization {
+  id          String   @id @default(uuid()) @db.Uuid
+  position    BigInt   @unique @default(autoincrement())
+  draftId     String   @db.Uuid
+  draft       Draft    @relation(fields: [draftId], references: [id])
+  ownerId     String
+  revision    Int
+  title       String
+  body        String
+  tags        String[]
+  coverId     String?  @db.Uuid
+  cover       Media?   @relation("FinalCover", fields: [coverId], references: [id])
+  videoId     String?  @db.Uuid
+  video       Media?   @relation("FinalVideo", fields: [videoId], references: [id])
+  imageIds    String[] @default([]) @db.Uuid
+  finalizedAt DateTime @default(now())
+  @@unique([draftId, revision])
+}
+
+/// 按账号维度保存工作区各模块的个性化偏好（模板、快捷指令、画布片段等）。
+model UserPreferences {
+  ownerId   String   @id
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

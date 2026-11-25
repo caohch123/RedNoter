@@ -1,0 +1,305 @@
+.creationHeader { display: none; }
+
+.shell:has([data-creation-theme]) {
+  --hdr-bg: rgba(253, 248, 241, 0.92);
+  --hdr-line: #d3bff2;
+  --hdr-ink: #362869;
+  --hdr-muted: #6c5e8e;
+  --hdr-hover: #f3ecff;
+  --hdr-pill: #faf6ff;
+  --hdr-accent: #d43b84;
+  --hdr-accent-soft: #ffeaf4;
+  --hdr-accent-border: #f09bc6;
+  --shell-bg: #fdf8f1;
+  --shell-ink: #362869;
+  --font-display: "YouYuan", "Hiragino Maru Gothic ProN", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+
+  --doodle-lavender: #9b74ef;
+  --doodle-pink: #eb74ad;
+  --doodle-pink-soft: rgba(244, 152, 198, 0.36);
+  --doodle-gold: #f3ba48;
+  --doodle-gold-soft: rgba(247, 205, 114, 0.45);
+  --doodle-cloud: rgba(214, 224, 255, 0.56);
+  --doodle-cloud-stroke: #a4b4f0;
+
+  --hdr-glass-track-bg: linear-gradient(180deg, rgba(242, 234, 255, 0.72) 0%, rgba(251, 247, 255, 0.88) 100%);
+  --hdr-glass-track-border: rgba(196, 173, 239, 0.88);
+  --hdr-glass-track-shadow: inset 0 1.5px 3px rgba(132, 88, 235, 0.12), inset 0 -1px 1px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(132, 88, 235, 0.06);
+  --hdr-glass-thumb-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 224, 240, 0.78) 44%, rgba(255, 206, 232, 0.9) 100%);
+  --hdr-glass-thumb-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.96), inset 0 -2px 5px rgba(229, 73, 146, 0.18), inset 0 0 0 1px rgba(242, 148, 198, 0.65), 0 2px 10px rgba(229, 73, 146, 0.2), 0 1px 2px rgba(132, 88, 235, 0.12);
+  --hdr-glass-thumb-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.14) 68%, transparent 100%);
+  --hdr-glass-thumb-caustic: radial-gradient(ellipse at 50% 100%, rgba(255, 168, 214, 0.45) 0%, transparent 75%);
+  --hdr-glass-active-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  --hdr-glass-hover-bg: rgba(132, 88, 235, 0.08);
+
+  min-width: 900px;
+  background: var(--shell-bg);
+  color: var(--shell-ink);
+  color-scheme: light;
+}
+
+:global(html[data-creation-mode="dark"]) .shell:has([data-creation-theme]) {
+  --hdr-bg: rgba(19, 17, 32, 0.92);
+  --hdr-line: #3e3463;
+  --hdr-ink: #f5f1fc;
+  --hdr-muted: #a69ac4;
+  --hdr-hover: #282240;
+  --hdr-pill: #211d34;
+  --hdr-accent: #f472b6;
+  --hdr-accent-soft: rgba(244, 114, 182, 0.18);
+  --hdr-accent-border: rgba(244, 114, 182, 0.42);
+  --shell-bg: #131120;
+  --shell-ink: #f5f1fc;
+
+  --doodle-lavender: #c4b5fd;
+  --doodle-pink: #f48cc0;
+  --doodle-pink-soft: rgba(244, 114, 182, 0.24);
+  --doodle-gold: #fcd34d;
+  --doodle-gold-soft: rgba(251, 191, 36, 0.24);
+  --doodle-cloud: rgba(139, 156, 232, 0.2);
+  --doodle-cloud-stroke: #8b9cf2;
+
+  --hdr-glass-track-bg: linear-gradient(180deg, rgba(28, 23, 48, 0.84) 0%, rgba(42, 35, 68, 0.74) 100%);
+  --hdr-glass-track-border: rgba(146, 122, 216, 0.46);
+  --hdr-glass-track-shadow: inset 0 1.5px 4px rgba(0, 0, 0, 0.45), inset 0 -1px 1px rgba(196, 181, 253, 0.14);
+  --hdr-glass-thumb-bg: linear-gradient(180deg, rgba(244, 140, 198, 0.36) 0%, rgba(192, 132, 252, 0.26) 52%, rgba(236, 72, 153, 0.34) 100%);
+  --hdr-glass-thumb-shadow: inset 0 1.5px 1px rgba(255, 236, 248, 0.42), inset 0 -2px 6px rgba(236, 72, 153, 0.28), inset 0 0 0 1px rgba(244, 152, 206, 0.5), 0 2px 12px rgba(236, 72, 153, 0.28);
+  --hdr-glass-thumb-highlight: linear-gradient(180deg, rgba(255, 240, 250, 0.36) 0%, rgba(255, 240, 250, 0.06) 65%, transparent 100%);
+  --hdr-glass-thumb-caustic: radial-gradient(ellipse at 50% 100%, rgba(244, 114, 182, 0.36) 0%, transparent 75%);
+  --hdr-glass-active-text-shadow: 0 1px 6px rgba(244, 114, 182, 0.35);
+  --hdr-glass-hover-bg: rgba(196, 181, 253, 0.1);
+
+  color-scheme: dark;
+}
+
+.shell:has([data-creation-theme]) .hostHeader {
+  display: none;
+}
+
+.shell:has([data-creation-theme]) .creationHeader {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  overflow: hidden;
+  background: var(--hdr-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1.5px solid var(--hdr-line);
+}
+
+.headerDoodles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html[data-creation-mode="dark"]) .headerDoodles {
+  opacity: 0.78;
+}
+
+:global(html[data-creation-sketch="off"]) .headerDoodles {
+  display: none;
+}
+
+.headerRow {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 14px;
+  max-width: 100%;
+  margin: auto;
+  min-height: 52px;
+  padding: 0 16px;
+}
+
+.headerRow nav {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1.5px solid var(--hdr-glass-track-border);
+  background: var(--hdr-glass-track-bg);
+  box-shadow: var(--hdr-glass-track-shadow);
+  backdrop-filter: blur(12px) saturate(150%);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.headerRow nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 6px 15px;
+  font-size: 13px;
+  font-weight: 520;
+  color: var(--hdr-muted);
+  border-radius: 999px;
+  border: 0;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 200ms ease, transform 140ms ease;
+}
+
+.headerRow nav a:hover {
+  background: var(--hdr-glass-hover-bg);
+  color: var(--hdr-ink);
+}
+
+.headerRow nav a:focus-visible {
+  outline: 2px solid var(--hdr-accent);
+  outline-offset: -3px;
+}
+
+.headerRow nav a[aria-current],
+.headerRow nav a[aria-current]:hover {
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--hdr-glass-thumb-bg);
+  box-shadow: var(--hdr-glass-thumb-shadow);
+  backdrop-filter: blur(14px) saturate(180%);
+  color: var(--hdr-accent);
+  font-weight: 660;
+  text-shadow: var(--hdr-glass-active-text-shadow);
+}
+
+.headerRow nav a[aria-current]::before {
+  content: "";
+  position: absolute;
+  inset: 1px 6px auto 6px;
+  height: 48%;
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--hdr-glass-thumb-highlight);
+  pointer-events: none;
+}
+
+.headerRow nav a[aria-current]::after {
+  content: "";
+  position: absolute;
+  inset: auto 10px 1px 10px;
+  height: 30%;
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--hdr-glass-thumb-caustic);
+  pointer-events: none;
+}
+
+.headerRow nav a[aria-current]:active {
+  transform: scaleX(0.98) scaleY(0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headerRow nav a { transition: none; }
+  .headerRow nav a[aria-current]:active { transform: none; }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  color: var(--hdr-ink);
+}
+
+.brand small {
+  font-size: 10.5px;
+  padding: 1px 7px;
+  background: var(--hdr-pill);
+  border: 1.5px solid var(--hdr-line);
+  border-radius: 999px;
+  color: var(--hdr-muted);
+}
+
+.brand strong {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--hdr-ink);
+  letter-spacing: -0.015em;
+}
+
+.brandIcon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.account {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.themeToggle {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1.5px solid var(--hdr-line);
+  background: var(--hdr-pill);
+  color: var(--hdr-muted);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.themeToggle:hover {
+  background: var(--hdr-hover);
+  color: var(--hdr-ink);
+}
+
+.account :is(button, span) {
+  color: var(--hdr-muted);
+}
+
+.account button {
+  border-width: 1.5px;
+  border-color: var(--hdr-line);
+  border-radius: 999px;
+  background: var(--hdr-pill);
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.account button:hover {
+  background: var(--hdr-hover);
+  color: var(--hdr-ink);
+}
+
+.account button.sketchToggle[aria-pressed="true"] {
+  background: var(--hdr-accent-soft);
+  border-color: var(--hdr-accent-border);
+  color: var(--hdr-accent);
+}
+
+.account button.sketchToggle[aria-pressed="true"]:hover {
+  border-color: var(--hdr-accent);
+  color: var(--hdr-accent);
+}
+
+.account button[data-user-settings-trigger] {
+  border-color: transparent;
+  background: transparent;
+  color: var(--hdr-ink);
+  cursor: pointer;
+}
+
+.account button[data-user-settings-trigger]:hover {
+  background: var(--hdr-hover);
+  border-color: var(--hdr-line);
+  color: var(--hdr-ink);
+}
+
+.account [data-user-avatar],
+.account span span:first-child {
+  color: #fff;
+  background: linear-gradient(135deg, #f472b6, #e54992);
+}

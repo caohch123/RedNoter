@@ -46,3 +46,11 @@ coverage/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Local creation services and assistant state
+.creation-media/
+.creation-pi/
+.creation-collector/
+.tools/
+.playwright-mcp/
+.workbuddy/

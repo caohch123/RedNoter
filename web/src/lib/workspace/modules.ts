@@ -15,24 +15,24 @@ export const WORKSPACE_MODULES: WorkspaceModule[] = [
     slug: "create",
     name: "AI 创作",
     desc: "原创模式与仿写模式，生成、预览并保存笔记。",
-    ready: false,
+    ready: true,
   },
   {
     slug: "topics",
     name: "话题追踪",
     desc: "实时热门话题与笔记，支持分类刷新。",
-    ready: false,
+    ready: true,
   },
   {
     slug: "assets",
     name: "素材库",
     desc: "图片、视频、文案、标题、标签结构化存储。",
-    ready: false,
+    ready: true,
   },
   {
     slug: "publish",
     name: "发布管理",
     desc: "草稿箱、待发布、已发布状态管理。",
-    ready: false,
+    ready: true,
   },
 ];

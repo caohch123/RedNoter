@@ -4,10 +4,10 @@ Next.js（App Router）+ TypeScript + Tailwind CSS。包含官网首页、登录
 
 ## 启动
 
-需要 Node.js 20.9 或更高版本（Next.js 16 的要求）。
+项目需要 Node.js 22.19 或更高版本。完整工作区启动步骤见[项目说明](../README.md)。
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -21,7 +21,7 @@ src/
 │  ├─ (marketing)/page.tsx        官网首页 /
 │  ├─ (auth)/login、register      登录 /login、注册 /register
 │  ├─ (workspace)/workspace/      工作区 /workspace/*（需登录）
-│  │   └─ create | topics | assets | publish   四个模块的占位页
+│  │   └─ create | topics | assets | publish   工作区模块
 │  └─ api/auth/*                  mock 接口（接上后端后可删）
 ├─ components/
 │  ├─ marketing/  auth/  workspace/  ui/
@@ -52,13 +52,9 @@ src/
 
 导航、登录校验和用户菜单由 `workspace/layout.tsx` 统一提供，模块里不用再处理。
 
-### 从静态原型搬页面时要注意
+### 工作区开发约定
 
-- **容器自己写**：外壳不限制内容宽度，模块页面自己包一层 `<main className="mx-auto w-full max-w-[1240px] px-5 ...">`（AI 创作原型用的是 1480px）。
-- **不要搬 `<header>` 和 `<script>`**：顶部导航已由外壳提供；原型里的 `onclick="..."` 要改成 React 的状态和事件。
-- **图标**：原型用的 `<iconify-icon>` 这里没有，换成 `lucide-react` 里的图标组件。
-- **Tailwind 是 v4**：没有 `tailwind.config.js`，颜色等主题变量在 `src/app/globals.css` 的 `@theme` 里。原型用到的 `brand-*`、`shadow-soft`、`grid-bg`、`no-scrollbar`、`typing-dot` 都已定义，取值和原型完全一致。
-- **配色**：工作区外壳是浅色（`bg-slate-50` 背景、白色顶栏），和原型的模块页一致，原型里的类名可以直接用。官网和登录页另用一套暖白色（`paper`、`sand-*`、`ink-*`），模块页面不需要用到。
+- **容器**：外壳不限制内容宽度，各模块定义自己的内容容器。
 - **当前用户**：客户端组件里用 `useCurrentUser()`（`src/components/workspace/CurrentUser.tsx`），不要再单独请求 `/auth/me`。
 - **请求接口**：统一用 `src/lib/api/client.ts` 的 `request()`，路径不带 `/api` 前缀；传 `FormData` 可以上传文件。每个模块在 `src/lib/api/` 下建自己的文件（参考 `auth.ts`）。
 - **Next.js 是 16**：开启了 Cache Components，服务端组件里读取 cookie、`searchParams` 等请求数据时必须包在 `<Suspense>` 里，否则构建报错。写代码前先看 `AGENTS.md` 的提示。
@@ -86,6 +82,6 @@ src/
 API_PROXY_TARGET=http://localhost:3001
 ```
 
-之后 `/api/auth/login` 会被转发到 `http://localhost:3001/auth/login`，mock 接口不再生效，前端代码无需改动。
+配置后，`/api/auth/login` 会被转发到 `http://localhost:3001/auth/login`。创作相关的 `/api/v1/creation/*` 由 `CREATION_API_TARGET` 单独转发，默认指向 `http://127.0.0.1:3002`。
 
 未配置时使用 mock：用户保存在 `web/.mock/users.json`（已加入 .gitignore），删除该文件即可清空账号。

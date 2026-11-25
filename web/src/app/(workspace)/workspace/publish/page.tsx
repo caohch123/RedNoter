@@ -1,5 +1,5 @@
-import { ModulePlaceholder } from "@/components/workspace/ModulePlaceholder";
+import { PublishManager } from "@/components/publish/PublishManager";
 
 export default function Page() {
-  return <ModulePlaceholder slug="publish" />;
+  return <PublishManager />;
 }

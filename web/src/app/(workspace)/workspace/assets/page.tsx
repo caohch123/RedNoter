@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PostCard, PostDetail, PostImage } from "@/components/workspace/PostCard";
-import { readSavedPosts, saveSavedPosts, type Post } from "@/lib/collections";
+import { readSavedPosts, rewriteSourceKey, saveSavedPosts, type Post } from "@/lib/collections";
 
 type MaterialSection = "posts" | "titles" | "content" | "images";
 const sections: { id: MaterialSection; label: string }[] = [
@@ -56,12 +56,12 @@ export default function Page() {
   function handleRewrite(content: string) {
     if (!content.trim()) return;
     try {
-      sessionStorage.setItem("rednoter:rewrite-source", content);
+      sessionStorage.setItem(rewriteSourceKey, content);
     } catch {
       setStorageError("无法传递文案，请检查浏览器是否允许本地存储。");
       return;
     }
-    router.push("/workspace/create");
+    router.push("/workspace/create?source=library");
   }
 
   function removeFromLibrary(postId: string) {

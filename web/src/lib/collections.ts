@@ -95,3 +95,5 @@ export function readSavedPosts(): Post[] {
 
   return migratedPosts;
 }
+
+export const rewriteSourceKey = "rednoter:rewrite-source";

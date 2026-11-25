@@ -1,0 +1,44 @@
+{
+  "name": "zhaixing-creation",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "dev:api": "tsx server/api.ts",
+    "dev:worker": "tsx server/worker.ts",
+    "dev:pi": "tsx server/pi-runner.ts",
+    "dev:collector": "node tools/xhs-collector.mjs",
+    "dev:web": "npm --prefix web run dev",
+    "typecheck": "tsc --noEmit && npm --prefix web run typecheck",
+    "test:integration": "node --env-file-if-exists=.env tests/creation.mjs",
+    "test:pi": "node --import tsx --test tests/pi-events.test.ts tests/pi-workspace.test.ts tests/pi-ui.test.ts tests/card-renderer.test.ts",
+    "test:models": "node --env-file-if-exists=.env tests/model-media.mjs",
+    "test:pi-e2e": "node tools/e2e/pi-browser.mjs",
+    "test:pi-quality": "node tools/e2e/pi-quality.mjs",
+    "dev": "node tools/dev.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-agent-core": "1.5.2",
+    "@earendil-works/pi-coding-agent": "1.5.2",
+    "@earendil-works/pi-ai": "1.5.2",
+    "@fastify/multipart": "^9.0.0",
+    "@prisma/client": "6.19.0",
+    "ali-oss": "^6.23.0",
+    "bullmq": "^5.0.0",
+    "dotenv": "^17.0.0",
+    "fastify": "^5.0.0",
+    "node-pty": "^1.1.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/ali-oss": "^6.23.0",
+    "@types/node": "^24.0.0",
+    "prisma": "6.19.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}

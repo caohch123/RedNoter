@@ -21,7 +21,7 @@ export class ApiError extends Error {
 
 export async function request<T>(
   path: string,
-  options: { method?: string; body?: unknown } = {},
+  options: { method?: string; body?: unknown; signal?: AbortSignal } = {},
 ): Promise<T> {
   // FormData（上传文件）原样发送，由浏览器自己带 multipart 边界；其余按 JSON 发送
   const isJson = options.body !== undefined && !(options.body instanceof FormData);
@@ -30,6 +30,7 @@ export async function request<T>(
     res = await fetch(`${API_BASE}${path}`, {
       method: options.method ?? "GET",
       credentials: "include",
+      signal: options.signal,
       headers: isJson ? { "Content-Type": "application/json" } : undefined,
       body: isJson ? JSON.stringify(options.body) : (options.body as FormData | undefined),
     });

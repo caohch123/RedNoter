@@ -3,6 +3,7 @@ import "@fontsource-variable/newsreader/opsz.css";
 import "@fontsource/noto-serif-sc/500.css";
 import "lxgw-wenkai-lite-webfont/lxgwwenkailite-regular.css";
 import "./globals.css";
+import "@xterm/xterm/css/xterm.css";
 
 export const metadata: Metadata = {
   title: {

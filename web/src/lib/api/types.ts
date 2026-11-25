@@ -31,6 +31,16 @@ export type ApiErrorCode =
   | "UNAUTHORIZED" // 401 未登录或登录已失效
   | "USERNAME_TAKEN" // 409 用户名已被注册
   | "NETWORK_ERROR" // 前端自用：请求没发出去
+  | "REVISION_CONFLICT"
+  | "REQUEST_ID_CONFLICT"
+  | "MEDIA_PREPARATION_IN_PROGRESS"
+  | "MEDIA_BRIEF_STALE"
+  | "GENERATION_UNAVAILABLE"
+  | "ACCOUNT_UNAVAILABLE"
+  | "NOT_FOUND"
+  | "ORIGIN_DENIED"
+  | "FILE_TOO_LARGE"
+  | "SERVICE_UNAVAILABLE"
   | "UNKNOWN";
 
 /** 会话 cookie 名：登录成功后由服务端以 httpOnly 方式写入 */

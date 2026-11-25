@@ -1,0 +1,2 @@
+ALTER TABLE "Run" ADD COLUMN "toolProgress" JSONB;
+ALTER TABLE "ModelProfile" ADD COLUMN "toolsVerified" BOOLEAN NOT NULL DEFAULT false;

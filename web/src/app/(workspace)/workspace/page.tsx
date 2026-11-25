@@ -7,7 +7,7 @@ export default function WorkspaceHomePage() {
     <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-10 sm:px-6">
       <h1 className="text-2xl font-bold tracking-tight text-slate-900">创作工作区</h1>
       <p className="mt-2 text-sm text-slate-500">
-        登录成功。下面四个模块正在开发中，接入后会出现在这里。
+        追踪话题、整理素材、创作笔记和管理发布。
       </p>
       <ul className="mt-8 grid gap-4 sm:grid-cols-2">
         {WORKSPACE_MODULES.map((module) => (
